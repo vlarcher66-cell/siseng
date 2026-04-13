@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modelos de Etapa — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/modelos-etapa.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group open" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i>
+        <span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item">
+          <i class="fas fa-hard-hat"></i><span>Obras</span>
+          <span class="nav-badge" id="obrasCount">0</span>
+        </a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item">
+          <i class="fas fa-truck"></i><span>Fornecedores</span>
+        </a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-list-check"></i><span>Modelos de Etapa</span>
+          <div class="nav-active-bar"></div>
+        </a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item">
+          <i class="fas fa-project-diagram"></i><span>Planejamento</span>
+        </a>
+        <a href="medicao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-ruler-combined"></i><span>Medição</span>
+        </a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item">
+          <i class="fas fa-chart-line"></i><span>Análise</span>
+        </a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="orcamento.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i><span>Orçamentos</span></a>
+    <a href="equipe.html" class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+
+    <div class="nav-section-label">Análise</div>
+    <a href="relatorios.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Relatórios</span></a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i>
+        <span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item">
+          <i class="fas fa-users-cog"></i><span>Usuários</span>
+        </a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item">
+          <i class="fas fa-sliders-h"></i><span>Empresa</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">12 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-link">Cadastros</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Modelos de Etapa</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar modelos..." id="headerSearch" oninput="filterModelos(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-user-cog"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-building"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item text-danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+
+    <!-- PAGE TITLE -->
+    <div class="page-title-bar">
+      <div class="page-title-left">
+        <h1><i class="fas fa-list-check"></i> Modelos de Etapa</h1>
+        <p>Catálogo de etapas padrão para uso nas obras. Crie uma vez, use em qualquer obra.</p>
+      </div>
+      <button class="btn-new-modelo" onclick="openModal()">
+        <i class="fas fa-plus"></i> Novo Modelo
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="me-stats">
+      <div class="me-stat">
+        <i class="fas fa-list-check"></i>
+        <div>
+          <span class="me-stat-val" id="statTotal">0</span>
+          <span class="me-stat-label">Total de Modelos</span>
+        </div>
+      </div>
+      <div class="me-stat">
+        <i class="fas fa-check-circle"></i>
+        <div>
+          <span class="me-stat-val" id="statAtivos">0</span>
+          <span class="me-stat-label">Ativos</span>
+        </div>
+      </div>
+      <div class="me-stat">
+        <i class="fas fa-layer-group"></i>
+        <div>
+          <span class="me-stat-val" id="statTipos">0</span>
+          <span class="me-stat-label">Tipos Utilizados</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="me-toolbar">
+      <div class="me-filters">
+        <div class="filter-group">
+          <i class="fas fa-layer-group"></i>
+          <select id="filterTipo" onchange="applyFilters()">
+            <option value="">Todos os tipos</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <i class="fas fa-toggle-on"></i>
+          <select id="filterStatus" onchange="applyFilters()">
+            <option value="">Todos os status</option>
+            <option value="ativo">Ativos</option>
+            <option value="inativo">Inativos</option>
+          </select>
+        </div>
+      </div>
+      <span class="me-count" id="meCount">0 modelos</span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="me-table-wrap">
+      <table class="me-table">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Nome do Modelo</th>
+            <th>Descrição</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="modelosTableBody">
+          <!-- preenchido via JS -->
+        </tbody>
+      </table>
+      <div class="me-empty hidden" id="meEmpty">
+        <i class="fas fa-list-check"></i>
+        <p>Nenhum modelo encontrado</p>
+        <button class="btn-new-modelo" onclick="openModal()"><i class="fas fa-plus"></i> Criar Primeiro Modelo</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════ MODAL CRIAR / EDITAR ═══════════════ -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <h2 id="modalTitle"><i class="fas fa-list-check"></i> Novo Modelo de Etapa</h2>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modeloId" />
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label><i class="fas fa-tag"></i> Nome do Modelo *</label>
+          <input type="text" id="fNome" placeholder="Ex: Execução de Fundação" maxlength="80" />
+        </div>
+        <div class="form-group flex-1">
+          <label><i class="fas fa-layer-group"></i> Tipo de Etapa *</label>
+          <select id="fTipo">
+            <option value="">Selecione...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-align-left"></i> Descrição</label>
+        <textarea id="fDescricao" rows="3" placeholder="Descreva brevemente o que esta etapa envolve..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label><i class="fas fa-clock"></i> Duração Estimada (dias)</label>
+          <input type="number" id="fDuracao" min="1" placeholder="Ex: 30" />
+        </div>
+        <div class="form-group flex-1">
+          <label><i class="fas fa-toggle-on"></i> Status</label>
+          <div class="toggle-wrap">
+            <label class="toggle-switch">
+              <input type="checkbox" id="fAtivo" checked />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label" id="toggleLabel">Ativo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-preview" id="modalPreview">
+        <div class="preview-icon" id="previewIcon"><i class="fas fa-cube"></i></div>
+        <div class="preview-info">
+          <span class="preview-nome" id="previewNome">Nome do Modelo</span>
+          <span class="preview-tipo" id="previewTipo">Tipo de Etapa</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" id="btnSave" onclick="saveModelo()">
+        <i class="fas fa-save"></i> Salvar Modelo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL DELETAR ═══════════════ -->
+<div class="modal-overlay hidden" id="deleteOverlay" onclick="closeDelete(event)">
+  <div class="modal-box modal-box--sm" id="deleteBox">
+    <div class="modal-header modal-header--danger">
+      <h2><i class="fas fa-trash-alt"></i> Excluir Modelo</h2>
+      <button class="modal-close" onclick="closeDelete()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p>Tem certeza que deseja excluir o modelo <strong id="deleteNome"></strong>?</p>
+      <p class="delete-warn"><i class="fas fa-exclamation-triangle"></i> Esta ação não poderá ser desfeita. As etapas já criadas a partir deste modelo não serão afetadas.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDelete()">Cancelar</button>
+      <button class="btn-delete" onclick="confirmDelete()"><i class="fas fa-trash-alt"></i> Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/modelos-etapa.js"></script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapa de Cotação — SISENG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#eef2f7;color:#1e293b;min-height:100vh;}
+
+    /* ── Header ── */
+    .pub-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:0;box-shadow:0 4px 24px rgba(0,0,0,.25);}
+    .pub-header-inner{max-width:1100px;margin:0 auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .pub-logo{display:flex;align-items:center;gap:12px;}
+    .pub-logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff;box-shadow:0 4px 14px rgba(249,115,22,.4);}
+    .pub-logo-text h1{font-size:1.3rem;font-weight:900;color:#fff;letter-spacing:-.3px;}
+    .pub-logo-text h1 span{color:#f97316;}
+    .pub-logo-text p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px;}
+    .pub-badge{background:rgba(34,197,94,.15);border:1.5px solid rgba(34,197,94,.3);color:#4ade80;padding:6px 16px;border-radius:50px;font-size:.75rem;font-weight:700;display:flex;align-items:center;gap:6px;}
+
+    /* ── Container ── */
+    .container{max-width:1100px;margin:0 auto;padding:28px 20px 60px;}
+
+    /* ── Painel unificado ── */
+    .painel{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);margin-bottom:20px;overflow:hidden;}
+    .painel-topo{padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid #f1f5f9;}
+    .painel-titulo h2{font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:2px;}
+    .painel-titulo p{font-size:.75rem;color:#94a3b8;}
+    .painel-meta{display:flex;gap:20px;flex-wrap:wrap;}
+    .meta-item{text-align:center;}
+    .meta-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;}
+    .meta-val{font-size:.9rem;font-weight:800;color:#0f172a;margin-top:2px;}
+
+    .painel-kpis{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #f1f5f9;padding:10px 16px;gap:10px;background:#f8fafc;}
+    .kpi{padding:14px 20px;border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+    .kpi.destaque{background:linear-gradient(135deg,#1e3a5f,#2563eb);box-shadow:0 4px 16px rgba(37,99,235,.3);}
+    .kpi-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin-bottom:4px;}
+    .kpi.destaque .kpi-label{color:rgba(255,255,255,.6);}
+    .kpi-val{font-size:1.1rem;font-weight:900;color:#0f172a;}
+    .kpi.destaque .kpi-val{color:#fff;}
+    .kpi-sub{font-size:.68rem;color:#94a3b8;margin-top:2px;}
+    .kpi.destaque .kpi-sub{color:rgba(255,255,255,.5);}
+
+    /* ── Faixa fornecedores ── */
+    .painel-forns{padding:10px 16px;display:grid;gap:8px;border-bottom:1px solid #f1f5f9;background:#f8fafc;}
+    .forn-item{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .forn-left{display:flex;align-items:center;gap:7px;min-width:0;}
+    .forn-nome{font-size:.78rem;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;cursor:pointer;transition:.15s;}
+    .forn-nome:hover{color:#2563eb;}
+    .forn-nome.expandido{white-space:normal;overflow:visible;text-overflow:unset;max-width:none;}
+    .forn-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+    .forn-total{font-size:.85rem;font-weight:800;color:#0f172a;}
+
+    .painel-venc{padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #f1f5f9;}
+    .painel-venc-label{font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+    .venc-chip{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;border:1.5px solid #2563eb;border-radius:50px;padding:5px 14px;}
+    .venc-chip-nome{font-size:.78rem;font-weight:800;color:#1d4ed8;}
+    .venc-chip-total{font-size:.78rem;font-weight:700;color:#0f172a;margin-left:4px;}
+    .venc-chip-neg{font-size:.6rem;background:#fef9c3;color:#b45309;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:2px;}
+
+    /* ── Tabela ── */
+    .table-card{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden;margin-bottom:20px;}
+    .table-card-header{padding:16px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;}
+    .table-card-title{font-weight:700;color:#0f172a;font-size:.95rem;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    thead th{padding:11px 14px;text-align:left;font-size:.67rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #f1f5f9;white-space:nowrap;background:#f8fafc;}
+    th.c,td.c{text-align:center;}
+    th.r,td.r{text-align:right;}
+    tbody tr{border-bottom:1px solid #f8fafc;}
+    tbody tr:hover{background:#fafbff;}
+    tbody td{padding:14px;}
+    tfoot td{padding:13px 14px;font-weight:700;background:#f8fafc;border-top:2px solid #e2e8f0;}
+
+    /* ── Preço cells ── */
+    .forn-col{min-width:140px;}
+    .preco-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+    .preco-unit{font-weight:700;color:#0f172a;font-size:.88rem;}
+    .preco-total{font-size:.7rem;color:#94a3b8;}
+    .preco-negoc{font-size:.65rem;color:#94a3b8;text-decoration:line-through;}
+    .badge-menor{display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#16a34a;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-bottom:3px;}
+    .badge-venc{display:inline-flex;align-items:center;gap:4px;background:#dbeafe;color:#1d4ed8;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-bottom:3px;}
+    .sem{color:#cbd5e1;font-size:.8rem;}
+
+    /* ── Col negociação ── */
+    .neg-unit{font-weight:800;color:#15803d;font-size:.92rem;}
+    .neg-total{font-size:.72rem;color:#86efac;}
+    .neg-orig{font-size:.65rem;color:#94a3b8;text-decoration:line-through;}
+    td.td-neg{background:#f0fdf4;border-left:3px solid #22c55e;}
+    tfoot .tf-neg{background:#dcfce7;color:#15803d;font-weight:800;font-size:.9rem;}
+
+
+    /* ── Célula vencedor na tabela ── */
+    td.venc-cell{background:rgba(37,99,235,.08)!important;border-left:3px solid #2563eb;}
+
+    /* ── Footer ── */
+    .pub-footer{text-align:center;padding:24px;color:#94a3b8;font-size:.75rem;}
+    .pub-footer strong{color:#64748b;}
+
+    /* ── Loading / Error ── */
+    .state-box{text-align:center;padding:80px 20px;color:#94a3b8;}
+    .state-box i{font-size:2.5rem;margin-bottom:16px;display:block;}
+    .state-box h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
+    .state-box p{font-size:.85rem;}
+    .error-box{color:#ef4444;}
+
+    /* ── Responsivo mobile ── */
+    @media(max-width:640px){
+      .pub-header-inner{padding:14px 16px;}
+      .pub-logo-icon{width:36px;height:36px;font-size:1rem;}
+      .pub-logo-text h1{font-size:1.1rem;}
+      .pub-badge{font-size:.65rem;padding:4px 10px;}
+      .container{padding:14px 12px 40px;}
+
+      /* Painel topo empilhado */
+      .painel-topo{flex-direction:column;align-items:flex-start;gap:10px;padding:14px 16px;}
+      .painel-titulo h2{font-size:.95rem;}
+      .painel-meta{gap:14px;}
+      .meta-val{font-size:.85rem;}
+
+      /* KPIs: coluna única */
+      .painel-kpis{grid-template-columns:1fr;padding:8px 12px;gap:8px;}
+      .kpi{padding:12px 16px;}
+      .kpi-val{font-size:1rem;}
+
+      /* Chips vencedor */
+      .painel-venc{padding:10px 14px;gap:8px;flex-wrap:wrap;}
+      .venc-chip{padding:4px 10px;}
+      .venc-chip-nome{font-size:.72rem;}
+      .venc-chip-total{font-size:.72rem;}
+
+      /* Tabela scroll */
+      .table-card-header{padding:12px 16px;}
+      .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+      table{min-width:520px;font-size:.78rem;}
+      thead th{padding:9px 10px;font-size:.6rem;}
+      tbody td{padding:10px;}
+      tfoot td{padding:10px;}
+      .preco-wrap{gap:1px;}
+      .preco-unit{font-size:.8rem;}
+      .neg-unit{font-size:.82rem;}
+
+      /* Fornecedores */
+      .painel-forns{grid-template-columns:1fr!important;}
+
+      /* Footer */
+      .pub-footer{font-size:.68rem;padding:16px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="pub-header">
+  <div class="pub-header-inner">
+    <div class="pub-logo">
+      <div class="pub-logo-icon">⛑</div>
+      <div class="pub-logo-text">
+        <h1>SIS<span>OBRAS</span></h1>
+        <p>Sistema de Gestão de Obras</p>
+      </div>
+    </div>
+    <div class="pub-badge"><i class="fas fa-lock"></i> Visualização segura — somente leitura</div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="loading" class="state-box">
+    <i class="fas fa-circle-notch fa-spin" style="color:#2563eb"></i>
+    <h3>Carregando mapa de cotação...</h3>
+    <p>Aguarde um momento</p>
+  </div>
+  <div id="error" class="state-box error-box" style="display:none">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3>Link inválido ou expirado</h3>
+    <p>Este link de compartilhamento não existe ou foi removido.</p>
+  </div>
+  <div id="content" style="display:none">
+
+    <!-- Painel unificado -->
+    <div class="painel">
+      <!-- Linha 1: título + metadados -->
+      <div class="painel-topo">
+        <div class="painel-titulo">
+          <h2 id="cotTitulo">—</h2>
+          <p id="cotNumero">—</p>
+        </div>
+        <div class="painel-meta">
+          <div class="meta-item"><div class="meta-label">Fornecedores</div><div class="meta-val" id="metaForns">—</div></div>
+          <div class="meta-item"><div class="meta-label">Itens</div><div class="meta-val" id="metaItens">—</div></div>
+          <div class="meta-item"><div class="meta-label">Emitido em</div><div class="meta-val" id="metaData">—</div></div>
+        </div>
+      </div>
+      <!-- Linha 2: KPIs -->
+      <div class="painel-kpis" id="painelKpis"></div>
+      <!-- Linha 3: fornecedores com totais -->
+      <div class="painel-forns" id="painelForns"></div>
+      <!-- Linha 4: vencedores (chips) -->
+      <div class="painel-venc" id="painelVenc" style="display:none">
+        <span class="painel-venc-label"><i class="fas fa-trophy" style="color:#f97316;margin-right:4px"></i>Vencedor:</span>
+        <div id="vencChips"></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-header">
+        <i class="fas fa-table" style="color:#2563eb"></i>
+        <span class="table-card-title">Comparativo de Preços</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="mapaHead"></thead>
+          <tbody id="mapaBody"></tbody>
+          <tfoot id="mapaFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pub-footer">
+  Documento gerado por <strong>SISENG</strong> — Sistema de Gestão de Obras &nbsp;|&nbsp; Apenas para visualização
+</div>
+
+<script>
+function formatCur(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR');
+}
+
+async function load() {
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('t');
+  if (!token) { showError(); return; }
+
+  try {
+    const res  = await fetch(`/api/compras/mapa/publico/${token}`);
+    if (!res.ok) { showError(); return; }
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display   = 'block';
+}
+
+function render({ cotacao, itens, fornecedores, vencedores }) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  // Info
+  document.getElementById('cotTitulo').textContent = cotacao.titulo || cotacao.numero;
+  document.getElementById('cotNumero').textContent = cotacao.numero;
+  document.getElementById('metaForns').textContent = fornecedores.length;
+  document.getElementById('metaItens').textContent = itens.length;
+  document.getElementById('metaData').textContent  = formatDate(cotacao.criado_em);
+  document.title = `${cotacao.numero} — Mapa de Cotação`;
+
+  // Normaliza IDs para inteiro em todos os objetos
+  fornecedores = fornecedores.map(f => ({ ...f, id: parseInt(f.id) }));
+  itens = itens.map(item => ({
+    ...item,
+    id: parseInt(item.id),
+    quantidade: parseFloat(item.quantidade),
+    precos: (item.precos || []).map(p => ({
+      ...p,
+      fornecedor_id: parseInt(p.fornecedor_id),
+      valor_unitario: parseFloat(p.valor_unitario),
+      preco_efetivo: parseFloat(p.preco_efetivo),
+      preco_negociado: p.preco_negociado != null ? parseFloat(p.preco_negociado) : null,
+    }))
+  }));
+
+  // Mapa de vencedores por item: { [id_cotacao_item]: vencedor }
+  const vencMap = {};
+  (vencedores || []).forEach(v => {
+    vencMap[parseInt(v.id_cotacao_item)] = {
+      ...v,
+      id_cotacao_item: parseInt(v.id_cotacao_item),
+      id_fornecedor_vencedor: parseInt(v.id_fornecedor_vencedor)
+    };
+  });
+  const temVencedores = Object.keys(vencMap).length > 0;
+
+  // Totais originais por fornecedor (sem negociação)
+  const totaisOrigForn = {};
+  fornecedores.forEach(f => {
+    totaisOrigForn[f.id] = itens.reduce((acc, item) => {
+      const p = item.precos.find(p => p.fornecedor_id === f.id);
+      return acc + (p ? p.valor_unitario * item.quantidade : 0);
+    }, 0);
+  });
+
+  // Calcula totais dos vencedores selecionados
+  const porVencForn = {}; // { [fornecedor_id]: { itens:[], total:0, temNeg:false } }
+  if (temVencedores) {
+    itens.forEach(item => {
+      const v = vencMap[item.id];
+      if (!v) return;
+      const fid = v.id_fornecedor_vencedor;
+      const p   = item.precos.find(p => p.fornecedor_id === fid);
+      if (!porVencForn[fid]) porVencForn[fid] = { itens: [], total: 0, temNeg: false };
+      const precoUnit = p ? p.preco_efetivo : 0;
+      const totalItem = precoUnit * item.quantidade;
+      if (p?.preco_negociado != null) porVencForn[fid].temNeg = true;
+      porVencForn[fid].itens.push({ descricao: item.descricao, precoUnit, totalItem });
+      porVencForn[fid].total += totalItem;
+    });
+  }
+
+  // "Negociação Sugerida" = total dos vencedores (se houver) ou menor por item
+  const totalVencedores = temVencedores
+    ? Object.values(porVencForn).reduce((acc, v) => acc + v.total, 0)
+    : itens.reduce((acc, item) => acc + (item.menor_preco !== null ? parseFloat(item.menor_preco) * parseFloat(item.quantidade) : 0), 0);
+
+  // Maior proposta (soma total original de cada fornecedor)
+  const totaisArr = fornecedores.map(f => ({ ...f, total: totaisOrigForn[f.id] }));
+  const piorForn  = [...totaisArr].sort((a, b) => b.total - a.total)[0];
+  const economia  = piorForn?.total > 0 ? ((piorForn.total - totalVencedores) / piorForn.total * 100).toFixed(1) : 0;
+
+  // ── KPIs no painel ──────────────────────────────────────
+  document.getElementById('painelKpis').innerHTML = `
+    <div class="kpi">
+      <div class="kpi-label">Maior proposta</div>
+      <div class="kpi-val">${formatCur(piorForn?.total || 0)}</div>
+      <div class="kpi-sub">${piorForn?.nome_fantasia || piorForn?.razao_social || '—'}</div>
+    </div>
+    <div class="kpi destaque">
+      <div class="kpi-label">${temVencedores ? 'Total dos vencedores' : 'Negociação sugerida'}</div>
+      <div class="kpi-val">${formatCur(totalVencedores)}</div>
+      <div class="kpi-sub">${temVencedores ? 'Fornecedores selecionados' : 'Melhor combinação por item'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Economia potencial</div>
+      <div class="kpi-val" style="color:#16a34a">${economia}%</div>
+      <div class="kpi-sub">vs. proposta mais cara</div>
+    </div>
+  `;
+
+  // ── Faixa de fornecedores com totais ────────────────────
+  const colsForns = Math.min(fornecedores.length, 4);
+  document.getElementById('painelForns').style.gridTemplateColumns = `repeat(${colsForns},1fr)`;
+  document.getElementById('painelForns').innerHTML = fornecedores.map(f => {
+    const total = totaisOrigForn[f.id] || 0;
+    const nome  = f.nome_fantasia || f.razao_social;
+    return `<div class="forn-item">
+      <div class="forn-left">
+        <span class="forn-nome" title="${nome}" onclick="this.classList.toggle('expandido')">${nome}</span>
+      </div>
+      <span class="forn-total">${formatCur(total)}</span>
+    </div>`;
+  }).join('');
+
+  // ── Vencedores como chips ────────────────────────────────
+  if (temVencedores) {
+    document.getElementById('painelVenc').style.display = 'flex';
+    const fornVencedores = fornecedores.filter(f => porVencForn[f.id]);
+    document.getElementById('vencChips').innerHTML = fornVencedores.map(f => {
+      const dados = porVencForn[f.id];
+      return `<div class="venc-chip">
+        <i class="fas fa-trophy" style="color:#f97316;font-size:.7rem"></i>
+        <span class="venc-chip-nome">${f.nome_fantasia || f.razao_social}</span>
+        <span class="venc-chip-total">${formatCur(dados.total)}</span>
+        ${dados.temNeg ? '<span class="venc-chip-neg">Negociado</span>' : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // ── Cabeçalho da tabela ─────────────────────────────────
+  const head = document.getElementById('mapaHead');
+  head.innerHTML = `
+    <tr>
+      <th>Item</th>
+      <th class="c">Qtd</th>
+      ${fornecedores.map(f => {
+        const isVencForn = !!porVencForn[f.id];
+        return `<th class="c forn-col" style="${isVencForn && temVencedores ? 'color:#1d4ed8;background:#eff6ff' : ''}">${f.nome_fantasia || f.razao_social}${isVencForn && temVencedores ? ' <i class="fas fa-trophy" style="color:#f97316;font-size:.65rem"></i>' : ''}</th>`;
+      }).join('')}
+      <th class="c" style="background:#f0fdf4;color:#15803d;border-left:3px solid #22c55e">Preço Negociado</th>
+    </tr>
+  `;
+
+  // ── Corpo da tabela ─────────────────────────────────────
+  const body = document.getElementById('mapaBody');
+  body.innerHTML = itens.map(item => {
+    const venc = vencMap[item.id];  // item.id já é int, vencMap keyed por int
+
+    const fornCols = fornecedores.map(f => {
+      const p = item.precos.find(p => p.fornecedor_id === f.id);
+      if (!p) return `<td class="c"><span class="sem">—</span></td>`;
+      const isVenc = venc?.id_fornecedor_vencedor === f.id;
+      const temNeg = p.preco_negociado != null;
+      return `<td class="c${isVenc ? ' venc-cell' : ''}">
+        <div class="preco-wrap">
+          ${isVenc ? '<span class="badge-venc"><i class="fas fa-trophy"></i> Vencedor</span>' : (p.eh_menor ? '<span class="badge-menor"><i class="fas fa-star"></i> Menor</span>' : '')}
+          ${temNeg ? `<span class="preco-negoc">${formatCur(p.valor_unitario)}</span>` : ''}
+          <span class="preco-unit">${formatCur(p.preco_efetivo)}</span>
+          <span class="preco-total">${formatCur(p.preco_efetivo * item.quantidade)} total</span>
+        </div>
+      </td>`;
+    }).join('');
+
+    // Coluna direita: vencedor selecionado (com negociação se houver) ou menor global
+    let negCol;
+    if (venc) {
+      const pVenc = item.precos.find(p => p.fornecedor_id === venc.id_fornecedor_vencedor);
+      if (pVenc) {
+        const fornNome = (fornecedores.find(f => f.id === venc.id_fornecedor_vencedor)?.nome_fantasia || '').split(' ')[0];
+        negCol = `<div class="preco-wrap">
+          <span style="font-size:.62rem;color:#1d4ed8;font-weight:700;margin-bottom:2px"><i class="fas fa-trophy"></i> ${fornNome}</span>
+          ${pVenc.preco_negociado != null ? `<span class="preco-negoc">${formatCur(pVenc.valor_unitario)}</span>` : ''}
+          <span class="neg-unit">${formatCur(pVenc.preco_efetivo)}</span>
+          <span class="neg-total">${formatCur(pVenc.preco_efetivo * item.quantidade)} total</span>
+        </div>`;
+      } else {
+        negCol = '<span class="sem">—</span>';
+      }
+    } else if (item.menor_preco !== null) {
+      negCol = `<div class="preco-wrap">
+        <span class="neg-unit">${formatCur(item.menor_preco)}</span>
+        <span class="neg-total">${formatCur(item.menor_preco * item.quantidade)} total</span>
+      </div>`;
+    } else {
+      negCol = '<span class="sem">—</span>';
+    }
+
+    return `<tr>
+      <td><strong style="font-size:.88rem">${item.descricao}</strong><div style="font-size:.7rem;color:#94a3b8">${item.unidade}</div></td>
+      <td class="c">${item.quantidade} ${item.unidade}</td>
+      ${fornCols}
+      <td class="c td-neg">${negCol}</td>
+    </tr>`;
+  }).join('');
+
+  // ── Rodapé totais ───────────────────────────────────────
+  const foot = document.getElementById('mapaFoot');
+  foot.innerHTML = `<tr>
+    <td colspan="2" style="font-weight:700;color:#0f172a"><i class="fas fa-calculator" style="color:#2563eb;margin-right:6px"></i>TOTAL</td>
+    ${fornecedores.map(f => {
+      const total    = totaisOrigForn[f.id] || 0;
+      const isVencF  = !!porVencForn[f.id] && temVencedores;
+      return `<td class="c" style="${isVencF ? 'color:#1d4ed8;font-weight:800;background:#eff6ff' : ''}">${formatCur(total)}${isVencF ? ' <i class="fas fa-trophy" style="font-size:.7rem;color:#f97316"></i>' : ''}</td>`;
+    }).join('')}
+    <td class="c tf-neg">${formatCur(totalVencedores)}</td>
+  </tr>`;
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subgrupos de Item — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <style>
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+    .page-header h1 { font-size:1.5rem; font-weight:800; color:#0f172a; margin:0; }
+    .page-header p { font-size:.85rem; color:#64748b; margin:2px 0 0; }
+    .btn-primary { background:#2563eb; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:.875rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .2s; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-secondary { background:#f1f5f9; color:#334155; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 18px; font-size:.875rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+    .btn-secondary:hover { background:#e2e8f0; }
+    .btn-danger { background:#ef4444; color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:.875rem; font-weight:600; cursor:pointer; }
+    .btn-danger:hover { background:#dc2626; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,.08); overflow:hidden; }
+    .card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #f1f5f9; gap:12px; flex-wrap:wrap; }
+    .card-title { font-weight:700; color:#0f172a; font-size:.95rem; display:flex; align-items:center; gap:8px; }
+    .card-title i { color:#2563eb; }
+    .card-filters { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .search-input { padding:9px 14px 9px 36px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.875rem; width:220px; background:#f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z' stroke='%2394a3b8' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat 10px center / 16px; outline:none; }
+    .search-input:focus { border-color:#2563eb; background-color:#fff; }
+    .filter-select { padding:9px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.875rem; color:#334155; background:#f8fafc; outline:none; cursor:pointer; font-family:inherit; max-width:200px; }
+    .filter-select:focus { border-color:#2563eb; }
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:#f8fafc; }
+    th { padding:11px 16px; text-align:left; font-size:.75rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.04em; border-bottom:1px solid #f1f5f9; white-space:nowrap; }
+    td { padding:13px 16px; font-size:.875rem; color:#334155; border-bottom:1px solid #f8fafc; vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:#f8fafc; }
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:700; }
+    .badge-ativo { background:#dcfce7; color:#16a34a; }
+    .badge-inativo { background:#fee2e2; color:#dc2626; }
+    .badge-grupo { background:#e0e7ff; color:#3730a3; padding:3px 10px; border-radius:6px; font-size:.78rem; font-weight:600; }
+    .btn-icon { background:none; border:none; cursor:pointer; padding:6px; border-radius:6px; color:#64748b; font-size:.9rem; transition:background .15s, color .15s; }
+    .btn-icon:hover { background:#f1f5f9; color:#2563eb; }
+    .btn-icon.del:hover { background:#fee2e2; color:#ef4444; }
+    .btn-icon.toggle-status:hover { background:#fef9c3; color:#b45309; }
+    .actions-cell { display:flex; align-items:center; gap:2px; }
+    .empty-state { text-align:center; padding:60px 20px; color:#94a3b8; }
+    .empty-state i { font-size:2.5rem; margin-bottom:12px; display:block; }
+    .table-wrapper { overflow-x:auto; }
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.hidden { display:none; }
+    .modal { background:#fff; border-radius:16px; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #f1f5f9; }
+    .modal-header h3 { font-size:1rem; font-weight:700; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px; }
+    .modal-header h3 i { color:#2563eb; }
+    .modal-close { background:none; border:none; cursor:pointer; font-size:1.1rem; color:#94a3b8; padding:4px; border-radius:4px; }
+    .modal-close:hover { color:#334155; background:#f1f5f9; }
+    .modal-body { padding:24px; display:flex; flex-direction:column; gap:16px; }
+    .modal-footer { display:flex; gap:10px; justify-content:flex-end; padding:16px 24px; border-top:1px solid #f1f5f9; }
+    .form-group { display:flex; flex-direction:column; gap:6px; }
+    .form-group label { font-size:.8rem; font-weight:700; color:#334155; }
+    .form-group input, .form-group select { padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s; }
+    .form-group input:focus, .form-group select:focus { border-color:#2563eb; }
+    /* Confirm */
+    .confirm-modal { max-width:400px; }
+    .confirm-body { padding:24px; text-align:center; }
+    .confirm-icon { font-size:2.5rem; color:#ef4444; margin-bottom:12px; }
+    .confirm-body p { color:#475569; font-size:.9rem; margin:0; }
+    /* Toast */
+    #toastContainer { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+    .toast { display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:10px; font-size:.875rem; font-weight:600; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideIn .3s ease; }
+    .toast.success { background:#fff; border-left:4px solid #22c55e; color:#15803d; }
+    .toast.error { background:#fff; border-left:4px solid #ef4444; color:#dc2626; }
+    .toast.warning { background:#fff; border-left:4px solid #f97316; color:#ea580c; }
+    @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+    .loading-row td { text-align:center; padding:40px; color:#94a3b8; }
+    .count-badge { background:#e0e7ff; color:#3730a3; border-radius:12px; padding:2px 8px; font-size:.75rem; font-weight:700; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><i class="fas fa-hard-hat"></i><span>SIS<strong>ENG</strong></span></div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info"><span class="user-name" id="sidebarName">Admin Demo</span><span class="user-role">Administrador</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group open" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html"          class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html"   class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html"  class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item active"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html" class="nav-item nav-sub-item"><i class="fas fa-ruler-combined"></i><span>Medição</span></a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item"><i class="fas fa-chart-line"></i><span>Análise</span></a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html"      class="nav-item nav-sub-item"><i class="fas fa-file-invoice"></i><span>Cotações</span></a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item"><i class="fas fa-table"></i><span>Mapa de Cotação</span></a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html" class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+    <div class="nav-section-label">Análise</div>
+    <a href="relatorios.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Relatórios</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days" id="trialDays">-- dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span>Cadastros</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Subgrupos</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar subgrupos..." oninput="document.getElementById('searchInput').value=this.value;filterTable()" />
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1><i class="fas fa-sitemap" style="color:#2563eb;margin-right:8px;"></i>Subgrupos de Item</h1>
+        <p>Gerencie os subgrupos de classificação vinculados aos grupos</p>
+      </div>
+      <button class="btn-primary" onclick="openModal()">
+        <i class="fas fa-plus"></i> Novo Subgrupo
+      </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-sitemap"></i>
+          Subgrupos cadastrados
+          <span class="count-badge" id="countBadge">0</span>
+        </div>
+        <div class="card-filters">
+          <select class="filter-select" id="grupoFilter" onchange="filterTable()">
+            <option value="">Todos os grupos</option>
+          </select>
+          <input type="text" class="search-input" id="searchInput" placeholder="Buscar por descrição..." oninput="filterTable()" />
+          <select class="filter-select" id="statusFilter" onchange="filterTable()">
+            <option value="">Todos os status</option>
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Grupo</th>
+              <th>Descrição</th>
+              <th>Status</th>
+              <th style="width:120px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr class="loading-row"><td colspan="4"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════ MODAL FORM ═══════════════ -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-sitemap"></i> <span id="modalTitle">Novo Subgrupo</span></h3>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="selectGrupo">Grupo <span style="color:#ef4444">*</span></label>
+        <select id="selectGrupo">
+          <option value="">Selecione um grupo...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="inputDescricao">Descrição <span style="color:#ef4444">*</span></label>
+        <input type="text" id="inputDescricao" placeholder="Ex: Tubulações PVC" maxlength="100" />
+      </div>
+      <div class="form-group" id="statusGroup" style="display:none;">
+        <label for="inputStatus">Status</label>
+        <select id="inputStatus">
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" id="btnSalvar" onclick="salvarSubgrupo()">
+        <i class="fas fa-save"></i> Salvar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL CONFIRMAR EXCLUSÃO ═══════════════ -->
+<div class="modal-overlay hidden" id="confirmOverlay">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-trash" style="color:#ef4444"></i> Excluir Subgrupo</h3>
+      <button class="modal-close" onclick="closeConfirm()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+      <p>Tem certeza que deseja excluir o subgrupo<br><strong id="confirmName"></strong>?</p>
+      <p style="margin-top:8px;font-size:.8rem;color:#94a3b8;">Esta ação não poderá ser desfeita.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-danger" onclick="confirmarExclusao()"><i class="fas fa-trash"></i> Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/subgrupos-item.js"></script>
+</body>
+</html>

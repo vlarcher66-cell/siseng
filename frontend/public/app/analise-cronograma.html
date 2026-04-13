@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/analise-cronograma.css" />
+  <!-- jsPDF + AutoTable para exportação de relatório -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group open" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html" class="nav-item nav-sub-item"><i class="fas fa-ruler-combined"></i><span>Medição</span></a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-chart-line"></i><span>Análise</span>
+          <div class="nav-active-bar"></div>
+        </a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html" class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i><span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item"><i class="fas fa-users-cog"></i><span>Usuários</span></a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item"><i class="fas fa-sliders-h"></i><span>Empresa</span></a>
+      </div>
+    </div>
+
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">12 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-link">Cronograma</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Análise</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar etapa ou obra..." id="headerSearch" oninput="searchAnalise(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Exportar relatório" onclick="exportarRelatorio()">
+        <i class="fas fa-file-export"></i>
+      </button>
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ── PAGE TITLE ── -->
+    <div class="page-title">
+      <div>
+        <h1><i class="fas fa-chart-line" style="color:var(--primary);margin-right:10px"></i>Análise de Cronograma</h1>
+        <p id="analiseSubtitle">Desvios físicos e financeiros por etapa e obra</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="exportarRelatorio()">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- ── TABS ── -->
+    <div class="analise-tabs">
+      <button class="analise-tab active" id="tabAnalise" onclick="switchTab('analise')">
+        <i class="fas fa-table"></i> Análise
+      </button>
+      <button class="analise-tab" id="tabGantt" onclick="switchTab('gantt')">
+        <i class="fas fa-diagram-project"></i> Gráfico de Gantt
+      </button>
+    </div>
+
+    <!-- ══════════════ PAINEL ANÁLISE ══════════════ -->
+    <div id="painelAnalise">
+
+    <!-- ── FILTROS ── -->
+    <div class="analise-filters">
+      <div class="filter-group">
+        <label><i class="fas fa-hard-hat"></i> Obra</label>
+        <select id="filterObra" onchange="applyFilters()">
+          <option value="">Todas as obras</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><i class="fas fa-calendar-alt"></i> Período</label>
+        <select id="filterPeriodo" onchange="applyFilters()">
+          <option value="">Todos os períodos</option>
+          <option value="2024-01">Jan/2024</option>
+          <option value="2024-06">Jun/2024</option>
+          <option value="2025-01">Jan/2025</option>
+          <option value="2025-06">Jun/2025</option>
+          <option value="2026-01">Jan/2026</option>
+          <option value="2026-03">Mar/2026</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><i class="fas fa-flag"></i> Status</label>
+        <select id="filterStatus" onchange="applyFilters()">
+          <option value="">Todos</option>
+          <option value="dentro">Dentro do orçamento</option>
+          <option value="estouro">Acima do orçamento</option>
+          <option value="atencao">Atenção</option>
+          <option value="nao_iniciado">Não iniciado</option>
+        </select>
+      </div>
+      <div class="filter-group filter-group-reset">
+        <label>&nbsp;</label>
+        <button class="btn-reset-filters" onclick="resetFilters()">
+          <i class="fas fa-times"></i> Limpar filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- ── KPI CARDS ── -->
+    <div class="kpi-grid" id="kpiGrid">
+      <!-- renderizado via JS -->
+    </div>
+
+    <!-- ── TOOLBAR DA TABELA ── -->
+    <div class="analise-toolbar">
+      <div class="toolbar-left">
+        <span class="obras-result-count" id="resultCount">Carregando...</span>
+      </div>
+      <div class="toolbar-right">
+        <select class="toolbar-select" id="sortSelect" onchange="sortAnalise(this.value)">
+          <option value="etapa">Ordenar: Etapa A-Z</option>
+          <option value="obra">Por Obra</option>
+          <option value="desvio_desc">Maior desvio</option>
+          <option value="desvio_asc">Menor desvio</option>
+          <option value="fisico_desc">Maior % físico</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── TABELA DE ANÁLISE ── -->
+    <div class="analise-table-wrap" id="analiseTableWrap">
+      <table class="analise-table" id="analiseTable">
+        <thead>
+          <tr>
+            <th class="col-etapa">Etapa</th>
+            <th class="col-obra">Obra</th>
+            <th class="col-valor">Custo Previsto</th>
+            <th class="col-valor">Custo Real</th>
+            <th class="col-valor">Desvio R$</th>
+            <th class="col-pct">Desvio %</th>
+            <th class="col-progress">Físico Realizado</th>
+            <th class="col-status">Status</th>
+          </tr>
+        </thead>
+        <tbody id="analiseTableBody">
+          <!-- renderizado via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── EMPTY STATE ── -->
+    <div class="empty-state hidden" id="emptyState">
+      <i class="fas fa-chart-line"></i>
+      <h3>Nenhum dado de análise encontrado</h3>
+      <p>Cadastre etapas com custo previsto e registre medições para visualizar os desvios.</p>
+      <a href="etapas.html" class="btn-primary-dash">
+        <i class="fas fa-plus"></i> Ir para Planejamento
+      </a>
+    </div>
+
+    <!-- ── PAINEL DE RESUMO POR OBRA ── -->
+    <div class="obra-summary-section" id="obraSummarySection">
+      <div class="section-header-row">
+        <h2 class="section-title"><i class="fas fa-building"></i> Resumo por Obra</h2>
+      </div>
+      <div class="obra-summary-grid" id="obraSummaryGrid">
+        <!-- renderizado via JS -->
+      </div>
+    </div>
+
+    </div><!-- /painelAnalise -->
+
+    <!-- ══════════════ PAINEL GANTT ══════════════ -->
+    <div id="painelGantt" style="display:none">
+
+      <!-- Filtro Gantt -->
+      <div class="gantt-filters">
+        <div class="filter-group">
+          <label><i class="fas fa-hard-hat"></i> Obra</label>
+          <select id="ganttFilterObra" onchange="renderGantt()">
+            <option value="">Todas as obras</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><i class="fas fa-flag"></i> Status</label>
+          <select id="ganttFilterStatus" onchange="renderGantt()">
+            <option value="">Todos</option>
+            <option value="pendente">Pendente</option>
+            <option value="em_andamento">Em andamento</option>
+            <option value="concluida">Concluída</option>
+            <option value="atrasada">Atrasada</option>
+            <option value="bloqueada">Bloqueada</option>
+          </select>
+        </div>
+        <div class="filter-group" style="align-self:flex-end">
+          <button class="btn-reset-filters" onclick="scrollGanttToToday()">
+            <i class="fas fa-crosshairs"></i> Hoje
+          </button>
+        </div>
+      </div>
+
+      <!-- Legenda -->
+      <div class="gantt-legend" id="ganttLegend">
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#64748b"></span>Pendente</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#2563eb"></span>Em andamento</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#22c55e"></span>Concluída</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#ef4444"></span>Atrasada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#8b5cf6"></span>Bloqueada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#f97316"></span>Hoje</span>
+      </div>
+
+      <!-- Container Gantt -->
+      <div class="gantt-wrap">
+        <!-- Sidebar fixa com nomes -->
+        <div class="gantt-sidebar" id="ganttSidebar">
+          <div class="gantt-sidebar-header">
+            <span>Etapa</span><span>Status</span>
+          </div>
+          <div class="gantt-sidebar-rows" id="ganttSidebarRows"></div>
+        </div>
+        <!-- Timeline rolável -->
+        <div class="gantt-timeline-wrap" id="ganttTimelineWrap">
+          <div class="gantt-timeline" id="ganttTimeline">
+            <!-- cabeçalho de meses/semanas -->
+            <div class="gantt-header-months" id="ganttHeaderMonths"></div>
+            <div class="gantt-header-weeks"  id="ganttHeaderWeeks"></div>
+            <!-- barras -->
+            <div class="gantt-bars-area" id="ganttBarsArea"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state gantt -->
+      <div class="empty-state hidden" id="ganttEmpty">
+        <i class="fas fa-diagram-project"></i>
+        <h3>Nenhuma etapa com datas definidas</h3>
+        <p>Cadastre etapas com data de início e data de fim para visualizar o Gantt.</p>
+        <a href="etapas.html" class="btn-primary-dash"><i class="fas fa-plus"></i> Ir para Planejamento</a>
+      </div>
+
+    </div><!-- /painelGantt -->
+
+    <!-- Tooltip Gantt -->
+    <div class="gantt-tooltip" id="ganttTooltip" style="display:none"></div>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/analise-cronograma.js"></script>
+</body>
+</html>

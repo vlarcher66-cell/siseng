@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SISENG — Gestão de Obras Inteligente</title>
+  <link rel="stylesheet" href="css/landing.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <i class="fas fa-hard-hat"></i>
+        <span>SIS<strong>ENG</strong></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Recursos</a></li>
+        <li><a href="#how-it-works">Como Funciona</a></li>
+        <li><a href="#plans">Planos</a></li>
+        <li><a href="#testimonials">Depoimentos</a></li>
+        <li><a href="#contact">Contato</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="btn-trial-nav" onclick="scrollToTrial()">
+          <i class="fas fa-rocket"></i> Teste Grátis 15 Dias
+        </button>
+      </div>
+      <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       HERO — LOGIN + CTA LADO A LADO
+  ══════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-container">
+
+      <!-- Lado esquerdo: texto -->
+      <div class="hero-content reveal">
+        <div class="hero-badge">
+          <i class="fas fa-star"></i> Número 1 em Gestão de Obras
+        </div>
+        <h1>
+          Gerencie suas obras<br />
+          <span class="highlight">com inteligência</span><br />
+          e precisão
+        </h1>
+        <p class="hero-desc">
+          Do orçamento à entrega, controle cada etapa da sua obra em tempo real.
+          Reduza custos, elimine atrasos e tome decisões baseadas em dados.
+        </p>
+        <div class="hero-stats">
+          <div class="stat">
+            <strong data-counter="2500" data-prefix="+">+2.500</strong>
+            <span>Obras gerenciadas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <strong data-counter="340" data-prefix="+">+340</strong>
+            <span>Empresas ativas</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <strong data-counter="98" data-suffix="%">98%</strong>
+            <span>Satisfação</span>
+          </div>
+        </div>
+        <div class="hero-cta-group">
+          <button class="btn-primary-hero" onclick="scrollToTrial()">
+            <i class="fas fa-rocket"></i> Começar Teste Grátis
+          </button>
+          <button class="btn-demo" onclick="openDemo()">
+            <i class="fas fa-play-circle"></i> Ver Demonstração
+          </button>
+        </div>
+      </div>
+
+      <!-- Lado direito: login direto -->
+      <div class="hero-login reveal reveal-delay-2">
+        <div class="login-card">
+          <div class="login-header">
+            <i class="fas fa-hard-hat login-icon"></i>
+            <h2>Acessar Sistema</h2>
+            <p>Entre com suas credenciais</p>
+          </div>
+
+          <div id="loginAlert" class="alert hidden"></div>
+
+          <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">
+                <i class="fas fa-envelope"></i> E-mail
+              </label>
+              <input
+                type="email"
+                id="loginEmail"
+                placeholder="seu@email.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loginPass">
+                <i class="fas fa-lock"></i> Senha
+              </label>
+              <div class="input-eye">
+                <input
+                  type="password"
+                  id="loginPass"
+                  placeholder="••••••••"
+                  required
+                  autocomplete="current-password"
+                />
+                <button type="button" class="eye-btn" onclick="togglePass('loginPass', this)">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe" />
+                <span>Lembrar-me</span>
+              </label>
+              <a href="#" class="forgot-link" onclick="openForgotPassword(event)">Esqueci a senha</a>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">
+              <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Entrar</span>
+              <span class="btn-loading hidden"><i class="fas fa-spinner fa-spin"></i> Entrando...</span>
+            </button>
+          </form>
+
+          <div class="login-divider">
+            <span>ou</span>
+          </div>
+
+          <button class="btn-trial-card" onclick="scrollToTrial()">
+            <i class="fas fa-gift"></i> Criar conta — 15 dias grátis
+          </button>
+
+          <p class="login-footer-note">
+            <i class="fas fa-shield-alt"></i> Seus dados estão protegidos com criptografia SSL
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-indicator">
+      <span>Role para conhecer mais</span>
+      <i class="fas fa-chevron-down bounce"></i>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FAIXA DE MARCAS / CREDIBILIDADE
+  ══════════════════════════════════════════ -->
+  <div class="trust-bar">
+    <div class="trust-container">
+      <span class="trust-label">Utilizado por empresas em todo o Brasil</span>
+      <div class="trust-logos">
+        <div class="trust-logo"><i class="fas fa-building"></i> Constrular</div>
+        <div class="trust-logo"><i class="fas fa-building"></i> Alfa Engenharia</div>
+        <div class="trust-logo"><i class="fas fa-building"></i> BrasBuild</div>
+        <div class="trust-logo"><i class="fas fa-building"></i> Norte Obras</div>
+        <div class="trust-logo"><i class="fas fa-building"></i> Premium Construtora</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RECURSOS / FEATURES
+  ══════════════════════════════════════════ -->
+  <section class="features" id="features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Recursos</span>
+        <h2>Tudo que você precisa para<br /><span class="highlight">gerenciar suas obras</span></h2>
+        <p>Uma plataforma completa para construtoras, incorporadoras e engenheiros</p>
+      </div>
+
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <div class="feature-icon icon-orange">
+            <i class="fas fa-project-diagram"></i>
+          </div>
+          <h3>Gestão de Obras</h3>
+          <p>Cadastre e monitore todas as suas obras em um só lugar. Controle etapas, cronogramas e responsáveis com facilidade.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-blue">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <h3>Orçamento & Custos</h3>
+          <p>Elabore orçamentos detalhados, acompanhe o custo real vs. previsto e receba alertas automáticos de desvio.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-green">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <h3>Cronograma Inteligente</h3>
+          <p>Planeje etapas com gráfico de Gantt integrado. Identifique atrasos e replaneje com apenas alguns cliques.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-purple">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Equipes & Fornecedores</h3>
+          <p>Gerencie funcionários, contratos de terceiros e fornecedores. Controle medições e pagamentos com precisão.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-red">
+            <i class="fas fa-file-invoice"></i>
+          </div>
+          <h3>Documentos & Contratos</h3>
+          <p>Armazene ART, plantas, contratos e licenças com versionamento. Acesse de qualquer lugar, a qualquer hora.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-yellow">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Relatórios & Dashboards</h3>
+          <p>Dashboards em tempo real com KPIs críticos. Exporte relatórios completos em PDF para clientes e diretoria.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-teal">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Acesso Mobile</h3>
+          <p>Sistema responsivo que funciona em qualquer dispositivo. Atualize o diário de obra diretamente do canteiro.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-indigo">
+            <i class="fas fa-bell"></i>
+          </div>
+          <h3>Alertas & Notificações</h3>
+          <p>Receba notificações por e-mail sobre vencimentos de contratos, desvios de custo e etapas críticas atrasadas.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-orange">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h3>Multi-usuário & Permissões</h3>
+          <p>Defina perfis de acesso por obra e função. Engenheiro, mestre de obras, financeiro — cada um vê o que precisa.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       COMO FUNCIONA
+  ══════════════════════════════════════════ -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Como Funciona</span>
+        <h2>Configure em minutos,<br /><span class="highlight">gerencie para sempre</span></h2>
+        <p>Em apenas 3 passos você já está com sua obra no controle</p>
+      </div>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">01</div>
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+            <h3>Crie sua conta</h3>
+            <p>Cadastre sua empresa em menos de 2 minutos. Nenhum cartão necessário para o teste grátis de 15 dias.</p>
+          </div>
+        </div>
+        <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step">
+          <div class="step-number">02</div>
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-hard-hat"></i></div>
+            <h3>Cadastre sua obra</h3>
+            <p>Adicione as obras, defina etapas, orçamento e adicione sua equipe com perfis de acesso personalizados.</p>
+          </div>
+        </div>
+        <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step">
+          <div class="step-number">03</div>
+          <div class="step-content">
+            <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+            <h3>Gerencie com dados</h3>
+            <p>Acompanhe o progresso em tempo real, receba alertas e tome decisões inteligentes com relatórios completos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       PLANOS
+  ══════════════════════════════════════════ -->
+  <section class="plans" id="plans">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Planos e Preços</span>
+        <h2>Escolha o plano ideal<br /><span class="highlight">para sua empresa</span></h2>
+        <p>Todos os planos incluem 15 dias de teste grátis. Sem cartão de crédito.</p>
+      </div>
+
+      <div class="plans-toggle">
+        <span class="toggle-label active" id="lbl-monthly" onclick="setPeriod('monthly')">Mensal</span>
+        <div class="toggle-switch" onclick="togglePeriod()">
+          <div class="toggle-thumb" id="toggleThumb"></div>
+        </div>
+        <span class="toggle-label" id="lbl-annual" onclick="setPeriod('annual')">
+          Anual <span class="discount-badge">-20%</span>
+        </span>
+      </div>
+
+      <div class="plans-grid">
+
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-icon"><i class="fas fa-seedling"></i></div>
+            <h3>Starter</h3>
+            <p>Para pequenas construtoras</p>
+          </div>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="price" data-monthly="197" data-annual="158">197</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Até 5 obras simultâneas</li>
+            <li><i class="fas fa-check"></i> 10 usuários</li>
+            <li><i class="fas fa-check"></i> Orçamento e cronograma</li>
+            <li><i class="fas fa-check"></i> Relatórios básicos</li>
+            <li><i class="fas fa-check"></i> Suporte por e-mail</li>
+            <li class="disabled"><i class="fas fa-times"></i> API de integração</li>
+            <li class="disabled"><i class="fas fa-times"></i> Gestor de conta dedicado</li>
+          </ul>
+          <button class="btn-plan" onclick="startTrial('starter')">
+            Iniciar Teste Grátis
+          </button>
+        </div>
+
+        <div class="plan-card featured">
+          <div class="plan-badge">Mais Popular</div>
+          <div class="plan-header">
+            <div class="plan-icon"><i class="fas fa-rocket"></i></div>
+            <h3>Profissional</h3>
+            <p>Para médias construtoras</p>
+          </div>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="price" data-monthly="397" data-annual="318">397</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Obras ilimitadas</li>
+            <li><i class="fas fa-check"></i> Usuários ilimitados</li>
+            <li><i class="fas fa-check"></i> Todos os módulos</li>
+            <li><i class="fas fa-check"></i> Relatórios avançados + PDF</li>
+            <li><i class="fas fa-check"></i> Suporte prioritário</li>
+            <li><i class="fas fa-check"></i> API de integração</li>
+            <li class="disabled"><i class="fas fa-times"></i> Gestor de conta dedicado</li>
+          </ul>
+          <button class="btn-plan featured-btn" onclick="startTrial('pro')">
+            Iniciar Teste Grátis
+          </button>
+        </div>
+
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-icon"><i class="fas fa-building"></i></div>
+            <h3>Enterprise</h3>
+            <p>Para grandes incorporadoras</p>
+          </div>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="price" data-monthly="797" data-annual="638">797</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Tudo do Profissional</li>
+            <li><i class="fas fa-check"></i> Multi-filiais / CNPJ</li>
+            <li><i class="fas fa-check"></i> White-label (sua marca)</li>
+            <li><i class="fas fa-check"></i> Relatórios personalizados</li>
+            <li><i class="fas fa-check"></i> Suporte 24/7</li>
+            <li><i class="fas fa-check"></i> API de integração</li>
+            <li><i class="fas fa-check"></i> Gestor de conta dedicado</li>
+          </ul>
+          <button class="btn-plan" onclick="startTrial('enterprise')">
+            Iniciar Teste Grátis
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       DEPOIMENTOS
+  ══════════════════════════════════════════ -->
+  <section class="testimonials" id="testimonials">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Depoimentos</span>
+        <h2>O que nossos clientes<br /><span class="highlight">estão dizendo</span></h2>
+      </div>
+
+      <div class="testimonials-grid">
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"Reduzi em 30% o custo nas minhas obras depois que comecei a usar o SISENG. O controle de orçamento em tempo real fez toda a diferença."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">RM</div>
+            <div>
+              <strong>Ricardo Menezes</strong>
+              <span>Diretor — Menezes Construtora</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"Antes eu gastava horas em planilhas Excel. Hoje tenho tudo centralizado, minha equipe acessa do celular na obra. Simplesmente incrível."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">CS</div>
+            <div>
+              <strong>Carla Souza</strong>
+              <span>Engenheira — CS Engenharia</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"O suporte é excelente e o sistema é muito intuitivo. Em menos de uma semana toda a equipe estava usando sem precisar de treinamento."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JP</div>
+            <div>
+              <strong>João Pedro Alves</strong>
+              <span>Sócio — Alves & Lima Obras</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       TRIAL — CADASTRO 15 DIAS GRÁTIS
+  ══════════════════════════════════════════ -->
+  <section class="trial-section" id="trial">
+    <div class="trial-container">
+      <div class="trial-content">
+        <div class="trial-badge"><i class="fas fa-gift"></i> 15 Dias 100% Grátis</div>
+        <h2>Comece agora mesmo,<br /><span class="highlight-light">sem custo e sem risco</span></h2>
+        <p>Crie sua conta em 2 minutos e tenha acesso completo ao sistema por 15 dias. Sem cartão de crédito.</p>
+        <ul class="trial-benefits">
+          <li><i class="fas fa-check-circle"></i> Acesso a todos os módulos</li>
+          <li><i class="fas fa-check-circle"></i> Suporte humano incluso</li>
+          <li><i class="fas fa-check-circle"></i> Cancele a qualquer momento</li>
+          <li><i class="fas fa-check-circle"></i> Dados migrados ao assinar</li>
+        </ul>
+      </div>
+
+      <div class="trial-form-wrap">
+        <div class="trial-form-card">
+          <h3><i class="fas fa-rocket"></i> Criar conta grátis</h3>
+          <p class="trial-subtitle">15 dias para explorar tudo sem pagar nada</p>
+
+          <div id="trialAlert" class="alert hidden"></div>
+
+          <form id="trialForm" onsubmit="handleTrial(event)">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Nome completo</label>
+              <input type="text" id="trialName" placeholder="Seu nome" required />
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-building"></i> Nome da empresa</label>
+              <input type="text" id="trialCompany" placeholder="Razão social ou nome fantasia" required />
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fas fa-envelope"></i> E-mail</label>
+                <input type="email" id="trialEmail" placeholder="seu@email.com" required />
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-phone"></i> WhatsApp</label>
+                <input type="tel" id="trialPhone" placeholder="(11) 99999-9999" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-lock"></i> Crie uma senha</label>
+              <div class="input-eye">
+                <input type="password" id="trialPass" placeholder="Mínimo 8 caracteres" required minlength="8" />
+                <button type="button" class="eye-btn" onclick="togglePass('trialPass', this)">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-list"></i> Plano inicial</label>
+              <select id="trialPlan">
+                <option value="starter">Starter — R$ 197/mês</option>
+                <option value="pro" selected>Profissional — R$ 397/mês (Mais popular)</option>
+                <option value="enterprise">Enterprise — R$ 797/mês</option>
+              </select>
+            </div>
+            <label class="checkbox-label terms">
+              <input type="checkbox" id="trialTerms" required />
+              <span>Li e aceito os <a href="#" target="_blank">Termos de Uso</a> e a <a href="#" target="_blank">Política de Privacidade</a></span>
+            </label>
+            <button type="submit" class="btn-trial-submit" id="trialBtn">
+              <span class="btn-text"><i class="fas fa-rocket"></i> Criar minha conta grátis</span>
+              <span class="btn-loading hidden"><i class="fas fa-spinner fa-spin"></i> Criando conta...</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       CONTATO
+  ══════════════════════════════════════════ -->
+  <section class="contact" id="contact">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Contato</span>
+        <h2>Ficou com dúvidas?<br /><span class="highlight">Fale com a gente</span></h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <i class="fas fa-envelope"></i>
+          <h4>E-mail</h4>
+          <p>contato@siseng.com.br</p>
+        </div>
+        <div class="contact-card">
+          <i class="fab fa-whatsapp"></i>
+          <h4>WhatsApp</h4>
+          <p>(11) 99999-9999</p>
+        </div>
+        <div class="contact-card">
+          <i class="fas fa-clock"></i>
+          <h4>Horário de Suporte</h4>
+          <p>Seg–Sex: 8h às 18h</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a href="#" class="logo logo-footer">
+          <i class="fas fa-hard-hat"></i>
+          <span>SIS<strong>ENG</strong></span>
+        </a>
+        <p>A plataforma mais completa para gestão de obras no Brasil. Simples, rápida e confiável.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Produto</h4>
+        <ul>
+          <li><a href="#features">Recursos</a></li>
+          <li><a href="#plans">Preços</a></li>
+          <li><a href="#how-it-works">Como Funciona</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Sobre nós</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#contact">Contato</a></li>
+          <li><a href="#">Parceiros</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">LGPD</a></li>
+          <li><a href="#">Segurança</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SISENG. Todos os direitos reservados.</p>
+      <p>Desenvolvido com <i class="fas fa-heart" style="color:#e74c3c"></i> para o setor da construção civil</p>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       MODAL: ESQUECI A SENHA
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="forgotModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeForgotPassword()"><i class="fas fa-times"></i></button>
+      <div class="modal-icon"><i class="fas fa-key"></i></div>
+      <h3>Recuperar Senha</h3>
+      <p>Informe seu e-mail e enviaremos as instruções para redefinir sua senha.</p>
+      <div id="forgotAlert" class="alert hidden"></div>
+      <form onsubmit="handleForgotPassword(event)">
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> E-mail</label>
+          <input type="email" id="forgotEmail" placeholder="seu@email.com" required />
+        </div>
+        <button type="submit" class="btn-login">
+          <i class="fas fa-paper-plane"></i> Enviar instruções
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       BOTÃO WHATSAPP FLUTUANTE
+  ══════════════════════════════════════════ -->
+  <a href="https://wa.me/5511999999999?text=Olá!%20Quero%20saber%20mais%20sobre%20o%20SIS%20OBRAS."
+     class="whatsapp-float" target="_blank" title="Fale conosco no WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script src="js/landing.js"></script>
+</body>
+</html>

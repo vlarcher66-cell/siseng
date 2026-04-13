@@ -1,0 +1,566 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle" title="Recolher menu">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item active">
+      <i class="fas fa-chart-pie"></i>
+      <span>Dashboard</span>
+      <div class="nav-active-bar"></div>
+    </a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i>
+        <span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item">
+          <i class="fas fa-hard-hat"></i><span>Obras</span>
+          <span class="nav-badge" id="obrasCount">0</span>
+        </a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item">
+          <i class="fas fa-truck"></i><span>Fornecedores</span>
+        </a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item">
+          <i class="fas fa-list-check"></i><span>Modelos de Etapa</span>
+        </a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item">
+          <i class="fas fa-project-diagram"></i><span>Planejamento</span>
+        </a>
+        <a href="medicao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-ruler-combined"></i><span>Medição</span>
+        </a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item">
+          <i class="fas fa-chart-line"></i><span>Análise</span>
+        </a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item">
+      <i class="fas fa-dollar-sign"></i><span>Financeiro</span>
+    </a>
+    <a href="orcamento.html" class="nav-item">
+      <i class="fas fa-file-invoice-dollar"></i><span>Orçamentos</span>
+    </a>
+    <a href="equipe.html" class="nav-item">
+      <i class="fas fa-users"></i><span>Equipe</span>
+    </a>
+    <a href="documentos.html" class="nav-item">
+      <i class="fas fa-folder-open"></i><span>Documentos</span>
+    </a>
+
+    <div class="nav-section-label">Análise</div>
+    <a href="relatorios.html" class="nav-item">
+      <i class="fas fa-chart-bar"></i><span>Relatórios</span>
+    </a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i>
+        <span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item">
+          <i class="fas fa-users-cog"></i><span>Usuários</span>
+        </a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item">
+          <i class="fas fa-sliders-h"></i><span>Empresa</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="trial-info" id="trialInfo">
+      <i class="fas fa-clock"></i>
+      <div>
+        <span class="trial-days">12 dias</span>
+        <span class="trial-label">restantes no trial</span>
+      </div>
+    </div>
+    <button class="btn-upgrade">
+      <i class="fas fa-rocket"></i> Assinar Plano
+    </button>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════════════════
+     OVERLAY MOBILE
+════════════════════════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ════════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER ─────────────────────────────────────────────── -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="breadcrumb">
+        <span class="bc-home"><i class="fas fa-home"></i></span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Dashboard</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar obras, relatórios..." id="globalSearch" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="header-btn" title="Notificações" onclick="toggleNotifications()">
+        <i class="fas fa-bell"></i>
+        <span class="header-badge">3</span>
+      </button>
+      <button class="header-btn" title="Ajuda">
+        <i class="fas fa-question-circle"></i>
+      </button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+
+    <!-- Dropdown usuário -->
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div>
+          <strong id="dropName">Admin Demo</strong>
+          <span id="dropEmail">demo@siseng.com.br</span>
+        </div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <a href="#" class="dropdown-item"><i class="fas fa-file-alt"></i> Termos de Uso</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+    </div>
+
+    <!-- Painel notificações -->
+    <div class="notif-panel hidden" id="notifPanel">
+      <div class="notif-header">
+        <h4>Notificações</h4>
+        <button onclick="markAllRead()">Marcar todas lidas</button>
+      </div>
+      <div class="notif-list">
+        <div class="notif-item unread">
+          <div class="notif-icon ni-warning"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="notif-body">
+            <strong>Desvio de orçamento</strong>
+            <span>Obra Residencial Tijuca ultrapassou 8% do orçamento previsto.</span>
+            <time>2 horas atrás</time>
+          </div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon ni-info"><i class="fas fa-calendar"></i></div>
+          <div class="notif-body">
+            <strong>Etapa concluída</strong>
+            <span>Fundação do Ed. Aurora foi marcada como concluída.</span>
+            <time>5 horas atrás</time>
+          </div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon ni-success"><i class="fas fa-file-contract"></i></div>
+          <div class="notif-body">
+            <strong>Contrato vencendo</strong>
+            <span>Contrato Fornecedor Aço Norte vence em 3 dias.</span>
+            <time>1 dia atrás</time>
+          </div>
+        </div>
+      </div>
+      <a href="notificacoes.html" class="notif-footer">Ver todas as notificações</a>
+    </div>
+  </header>
+
+  <!-- CONTENT ─────────────────────────────────────────────── -->
+  <main class="content">
+
+    <!-- ── Page title ── -->
+    <div class="page-title">
+      <div>
+        <h1>Visão Geral</h1>
+        <p id="dateDisplay">Carregando...</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="exportReport()">
+          <i class="fas fa-download"></i> Exportar PDF
+        </button>
+        <button class="btn-primary-dash" onclick="openNovaObra()">
+          <i class="fas fa-plus"></i> Nova Obra
+        </button>
+      </div>
+    </div>
+
+    <!-- ── KPI Cards ── -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card reveal">
+        <div class="kpi-header">
+          <div class="kpi-icon kpi-orange"><i class="fas fa-hard-hat"></i></div>
+          <div class="kpi-trend trend-up">
+            <i class="fas fa-arrow-up"></i> 12%
+          </div>
+        </div>
+        <div class="kpi-value" data-counter="12">12</div>
+        <div class="kpi-label">Obras Ativas</div>
+        <div class="kpi-sub">+2 este mês</div>
+        <div class="kpi-sparkline">
+          <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline points="0,28 16,22 32,18 48,24 64,10 80,14 100,6"
+              fill="none" stroke="rgba(249,115,22,.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,28 16,22 32,18 48,24 64,10 80,14 100,6 100,32 0,32"
+              fill="rgba(249,115,22,.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-1">
+        <div class="kpi-header">
+          <div class="kpi-icon kpi-blue"><i class="fas fa-dollar-sign"></i></div>
+          <div class="kpi-trend trend-up">
+            <i class="fas fa-arrow-up"></i> 8%
+          </div>
+        </div>
+        <div class="kpi-value" data-counter="4850000" data-prefix="R$ " data-format="currency">R$ 4,85M</div>
+        <div class="kpi-label">Orçamento Total</div>
+        <div class="kpi-sub">Todas as obras ativas</div>
+        <div class="kpi-sparkline">
+          <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline points="0,24 16,20 32,22 48,14 64,16 80,8 100,4"
+              fill="none" stroke="rgba(59,130,246,.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,24 16,20 32,22 48,14 64,16 80,8 100,4 100,32 0,32"
+              fill="rgba(59,130,246,.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-2">
+        <div class="kpi-header">
+          <div class="kpi-icon kpi-red"><i class="fas fa-coins"></i></div>
+          <div class="kpi-trend trend-down">
+            <i class="fas fa-arrow-up"></i> 5%
+          </div>
+        </div>
+        <div class="kpi-value" data-counter="3120000" data-prefix="R$ " data-format="currency">R$ 3,12M</div>
+        <div class="kpi-label">Custo Real</div>
+        <div class="kpi-sub">64% do orçamento</div>
+        <div class="kpi-sparkline">
+          <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline points="0,26 16,22 32,20 48,18 64,20 80,16 100,14"
+              fill="none" stroke="rgba(239,68,68,.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,26 16,22 32,20 48,18 64,20 80,16 100,14 100,32 0,32"
+              fill="rgba(239,68,68,.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-3">
+        <div class="kpi-header">
+          <div class="kpi-icon kpi-green"><i class="fas fa-check-circle"></i></div>
+          <div class="kpi-trend trend-up">
+            <i class="fas fa-arrow-up"></i> 18%
+          </div>
+        </div>
+        <div class="kpi-value" data-counter="47">47</div>
+        <div class="kpi-label">Etapas Concluídas</div>
+        <div class="kpi-sub">De 98 no total</div>
+        <div class="kpi-sparkline">
+          <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+            <polyline points="0,28 16,24 32,20 48,16 64,12 80,8 100,4"
+              fill="none" stroke="rgba(34,197,94,.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,28 16,24 32,20 48,16 64,12 80,8 100,4 100,32 0,32"
+              fill="rgba(34,197,94,.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Charts + Obras row ── -->
+    <div class="charts-row">
+
+      <!-- Gráfico Evolução Financeira -->
+      <div class="chart-card reveal">
+        <div class="chart-header">
+          <div>
+            <h3>Evolução Financeira</h3>
+            <p>Orçado vs. Real — Últimos 6 meses</p>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot" style="background:#3b82f6"></span> Orçado
+            <span class="legend-dot" style="background:#f97316"></span> Real
+          </div>
+        </div>
+        <div class="bar-chart-wrap">
+          <div class="bar-chart" id="financeChart">
+            <!-- gerado pelo JS -->
+          </div>
+          <div class="bar-chart-labels" id="financeLabels"></div>
+        </div>
+      </div>
+
+      <!-- Status das Obras -->
+      <div class="chart-card reveal reveal-delay-2">
+        <div class="chart-header">
+          <div>
+            <h3>Status das Obras</h3>
+            <p>Distribuição por situação</p>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 120 120" id="donutChart">
+            <!-- gerado pelo JS -->
+          </svg>
+          <div class="donut-center">
+            <span class="donut-total">12</span>
+            <span class="donut-label">obras</span>
+          </div>
+        </div>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+
+    </div>
+
+    <!-- ── Obras + Atividade row ── -->
+    <div class="bottom-row">
+
+      <!-- Tabela de Obras -->
+      <div class="table-card reveal">
+        <div class="table-header">
+          <div>
+            <h3>Obras em Andamento</h3>
+            <p>Acompanhamento em tempo real</p>
+          </div>
+          <div class="table-actions">
+            <div class="table-search">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Filtrar obras..." id="tableSearch" oninput="filterTable(this.value)" />
+            </div>
+            <a href="obras.html" class="btn-link">Ver todas <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="obrasTable">
+            <thead>
+              <tr>
+                <th>Obra</th>
+                <th>Responsável</th>
+                <th>Progresso</th>
+                <th>Orçamento</th>
+                <th>Prazo</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="obrasBody">
+              <!-- gerado pelo JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span id="tableCount">Mostrando 6 de 12 obras</span>
+          <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed de Atividade -->
+      <div class="activity-card reveal reveal-delay-2">
+        <div class="activity-header">
+          <h3>Atividade Recente</h3>
+          <button class="btn-link-sm">Ver tudo</button>
+        </div>
+        <div class="activity-feed" id="activityFeed">
+          <!-- gerado pelo JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Ações Rápidas ── -->
+    <div class="quick-actions reveal">
+      <h3 class="qa-title">Ações Rápidas</h3>
+      <div class="qa-grid">
+        <button class="qa-btn" onclick="openNovaObra()">
+          <div class="qa-icon qa-orange"><i class="fas fa-plus-circle"></i></div>
+          <span>Nova Obra</span>
+        </button>
+        <button class="qa-btn" onclick="window.location='financeiro.html'">
+          <div class="qa-icon qa-blue"><i class="fas fa-file-invoice-dollar"></i></div>
+          <span>Lançamento</span>
+        </button>
+        <button class="qa-btn" onclick="window.location='documentos.html'">
+          <div class="qa-icon qa-purple"><i class="fas fa-upload"></i></div>
+          <span>Upload Doc.</span>
+        </button>
+        <button class="qa-btn" onclick="window.location='diario.html'">
+          <div class="qa-icon qa-teal"><i class="fas fa-book"></i></div>
+          <span>Diário de Obra</span>
+        </button>
+        <button class="qa-btn" onclick="exportReport()">
+          <div class="qa-icon qa-yellow"><i class="fas fa-chart-bar"></i></div>
+          <span>Relatório PDF</span>
+        </button>
+        <button class="qa-btn" onclick="window.location='equipe.html'">
+          <div class="qa-icon qa-green"><i class="fas fa-user-plus"></i></div>
+          <span>Add Usuário</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL: NOVA OBRA
+════════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="novaObraModal">
+  <div class="dash-modal">
+    <div class="dash-modal-header">
+      <h3><i class="fas fa-hard-hat"></i> Nova Obra</h3>
+      <button onclick="closeNovaObra()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Nome da Obra *</label>
+          <input type="text" placeholder="Ex: Residencial das Palmeiras" />
+        </div>
+        <div class="form-group">
+          <label>Cliente</label>
+          <input type="text" placeholder="Nome do cliente" />
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Data de Início</label>
+          <input type="date" />
+        </div>
+        <div class="form-group">
+          <label>Previsão de Entrega</label>
+          <input type="date" />
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Orçamento (R$)</label>
+          <input type="text" placeholder="0,00" />
+        </div>
+        <div class="form-group">
+          <label>Status Inicial</label>
+          <select>
+            <option>Planejamento</option>
+            <option>Em andamento</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Endereço</label>
+        <input type="text" placeholder="Rua, número, bairro, cidade — UF" />
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea rows="3" placeholder="Descrição geral da obra..."></textarea>
+      </div>
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeNovaObra()">Cancelar</button>
+      <button class="btn-primary-dash" onclick="saveNovaObra()">
+        <i class="fas fa-save"></i> Criar Obra
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/sidebar.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

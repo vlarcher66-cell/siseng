@@ -1,0 +1,537 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obras — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/obras.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group open" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i>
+        <span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-hard-hat"></i><span>Obras</span>
+          <span class="nav-badge" id="obrasCount">0</span>
+          <div class="nav-active-bar"></div>
+        </a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item">
+          <i class="fas fa-truck"></i><span>Fornecedores</span>
+        </a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item">
+          <i class="fas fa-list-check"></i><span>Modelos de Etapa</span>
+        </a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item">
+          <i class="fas fa-project-diagram"></i><span>Planejamento</span>
+        </a>
+        <a href="medicao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-ruler-combined"></i><span>Medição</span>
+        </a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item">
+          <i class="fas fa-chart-line"></i><span>Análise</span>
+        </a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item">
+      <i class="fas fa-dollar-sign"></i><span>Financeiro</span>
+    </a>
+    <a href="orcamento.html" class="nav-item">
+      <i class="fas fa-file-invoice-dollar"></i><span>Orçamentos</span>
+    </a>
+    <a href="equipe.html" class="nav-item">
+      <i class="fas fa-users"></i><span>Equipe</span>
+    </a>
+    <a href="documentos.html" class="nav-item">
+      <i class="fas fa-folder-open"></i><span>Documentos</span>
+    </a>
+
+    <div class="nav-section-label">Análise</div>
+    <a href="relatorios.html" class="nav-item">
+      <i class="fas fa-chart-bar"></i><span>Relatórios</span>
+    </a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i>
+        <span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item">
+          <i class="fas fa-users-cog"></i><span>Usuários</span>
+        </a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item">
+          <i class="fas fa-sliders-h"></i><span>Empresa</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">12 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Obras</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar obras..." id="headerSearch" oninput="searchObras(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- Page title -->
+    <div class="page-title">
+      <div>
+        <h1><i class="fas fa-hard-hat" style="color:var(--primary);margin-right:10px"></i>Gestão de Obras</h1>
+        <p id="obrasSubtitle">Carregando...</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="exportObras()">
+          <i class="fas fa-download"></i> Exportar
+        </button>
+        <button class="btn-primary-dash" onclick="openModalObra()">
+          <i class="fas fa-plus"></i> Nova Obra
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STATUS FILTER TABS ── -->
+    <div class="status-tabs" id="statusTabs">
+      <button class="status-tab active" data-status="todos" onclick="setStatusFilter('todos', this)">
+        <i class="fas fa-th-large"></i> Todas
+        <span class="tab-count" id="cnt-todos">0</span>
+      </button>
+      <button class="status-tab tab-andamento" data-status="em_andamento" onclick="setStatusFilter('em_andamento', this)">
+        <i class="fas fa-hard-hat"></i> Em Andamento
+        <span class="tab-count" id="cnt-em_andamento">0</span>
+      </button>
+      <button class="status-tab tab-planejamento" data-status="planejamento" onclick="setStatusFilter('planejamento', this)">
+        <i class="fas fa-drafting-compass"></i> Planejamento
+        <span class="tab-count" id="cnt-planejamento">0</span>
+      </button>
+      <button class="status-tab tab-paralizada" data-status="paralizada" onclick="setStatusFilter('paralizada', this)">
+        <i class="fas fa-pause-circle"></i> Paralisada
+        <span class="tab-count" id="cnt-paralizada">0</span>
+      </button>
+      <button class="status-tab tab-concluida" data-status="concluida" onclick="setStatusFilter('concluida', this)">
+        <i class="fas fa-check-circle"></i> Concluída
+        <span class="tab-count" id="cnt-concluida">0</span>
+      </button>
+      <button class="status-tab tab-atrasada" data-status="atrasada" onclick="setStatusFilter('atrasada', this)">
+        <i class="fas fa-exclamation-triangle"></i> Atrasada
+        <span class="tab-count" id="cnt-atrasada">0</span>
+      </button>
+      <button class="status-tab tab-cancelada" data-status="cancelada" onclick="setStatusFilter('cancelada', this)">
+        <i class="fas fa-ban"></i> Cancelada
+        <span class="tab-count" id="cnt-cancelada">0</span>
+      </button>
+    </div>
+
+    <!-- ── TOOLBAR ── -->
+    <div class="obras-toolbar">
+      <div class="toolbar-left">
+        <div class="view-toggle">
+          <button class="view-btn" id="btnGrid" onclick="setView('grid')" title="Grade">
+            <i class="fas fa-th-large"></i>
+          </button>
+          <button class="view-btn active" id="btnList" onclick="setView('list')" title="Lista">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+        <span class="obras-result-count" id="resultCount">Carregando...</span>
+      </div>
+      <div class="toolbar-right">
+        <select class="toolbar-select" id="sortSelect" onchange="sortObras(this.value)">
+          <option value="nome">Ordenar: Nome A-Z</option>
+          <option value="nome_desc">Ordenar: Nome Z-A</option>
+          <option value="data">Mais recente</option>
+          <option value="pct_desc">Maior progresso</option>
+          <option value="orc_desc">Maior orçamento</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── OBRAS GRID ── -->
+    <div class="obras-container" id="obrasContainer">
+      <!-- Gerado pelo JS -->
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state hidden" id="emptyState">
+      <i class="fas fa-hard-hat"></i>
+      <h3>Nenhuma obra encontrada</h3>
+      <p>Tente outro filtro ou cadastre uma nova obra.</p>
+      <button class="btn-primary-dash" onclick="openModalObra()">
+        <i class="fas fa-plus"></i> Cadastrar Obra
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: CRIAR / EDITAR OBRA
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalObra">
+  <div class="dash-modal modal-obra-size">
+    <div class="dash-modal-header">
+      <h3 id="modalObraTitle"><i class="fas fa-hard-hat"></i> Nova Obra</h3>
+      <button onclick="closeModalObra()"><i class="fas fa-times"></i></button>
+    </div>
+    <!-- Abas do modal -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('tab-ident')" id="btn-tab-ident">
+        <i class="fas fa-info-circle"></i> Identificação
+      </button>
+      <button class="modal-tab" onclick="switchTab('tab-tecnico')" id="btn-tab-tecnico">
+        <i class="fas fa-drafting-compass"></i> Técnico
+      </button>
+      <button class="modal-tab" onclick="switchTab('tab-datas')" id="btn-tab-datas">
+        <i class="fas fa-calendar-alt"></i> Datas & Finanças
+      </button>
+      <button class="modal-tab" onclick="switchTab('tab-local')" id="btn-tab-local">
+        <i class="fas fa-map-marker-alt"></i> Localização
+      </button>
+    </div>
+
+    <div class="dash-modal-body" id="modalObraBody">
+
+      <!-- ABA: Identificação -->
+      <div class="tab-pane active" id="tab-ident">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Nome da Obra *</label>
+            <input type="text" id="obraNome" placeholder="Ex: Residencial das Palmeiras" />
+          </div>
+          <div class="form-group">
+            <label>Cliente</label>
+            <input type="text" id="obraCliente" placeholder="Nome do cliente" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Responsável</label>
+            <input type="text" id="obraResponsavel" placeholder="Engenheiro responsável" />
+          </div>
+          <div class="form-group">
+            <label>Status da Obra *</label>
+            <select id="obraStatus">
+              <option value="planejamento">Planejamento</option>
+              <option value="em_andamento">Em Andamento</option>
+              <option value="paralizada">Paralisada</option>
+              <option value="concluida">Concluída</option>
+              <option value="atrasada">Atrasada</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Descrição / Observações</label>
+          <textarea id="obraDescricao" rows="3" placeholder="Descrição geral, observações importantes..."></textarea>
+        </div>
+      </div>
+
+      <!-- ABA: Técnico -->
+      <div class="tab-pane hidden" id="tab-tecnico">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Sistema Construtivo</label>
+            <div class="input-with-btn">
+              <select id="obraSistema">
+                <option value="">Selecione...</option>
+              </select>
+              <button type="button" class="btn-add-inline" onclick="openPopupSistema()" title="Cadastrar novo sistema construtivo">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Cobertura</label>
+            <div class="input-with-btn">
+              <select id="obraCobertura">
+                <option value="">Selecione...</option>
+              </select>
+              <button type="button" class="btn-add-inline" onclick="openPopupCobertura()" title="Cadastrar novo tipo de cobertura">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Área Construída (m²)</label>
+            <div class="input-suffix-wrap">
+              <input type="number" id="obraArea" placeholder="0,00" min="0" step="0.01" />
+              <span class="input-suffix">m²</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA: Datas & Finanças -->
+      <div class="tab-pane hidden" id="tab-datas">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Data de Início</label>
+            <input type="date" id="obraInicio" />
+          </div>
+          <div class="form-group">
+            <label>Previsão de Entrega</label>
+            <input type="date" id="obraPrazo" />
+          </div>
+          <div class="form-group">
+            <label>Orçamento Total (R$)</label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">R$</span>
+              <input type="text" id="obraOrcamento" placeholder="0,00" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA: Localização -->
+      <div class="tab-pane hidden" id="tab-local">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="obraEndereco" placeholder="Rua, número, bairro" />
+          </div>
+          <div class="form-group">
+            <label>Cidade — UF</label>
+            <input type="text" id="obraCidade" placeholder="Ex: São Paulo — SP" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalObra()">Cancelar</button>
+      <button class="btn-primary-dash" onclick="saveObra()" id="btnSaveObra">
+        <i class="fas fa-save"></i> Salvar Obra
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: VISUALIZAR OBRA
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalView">
+  <div class="dash-modal modal-view-size">
+    <div class="dash-modal-header">
+      <h3 id="viewTitle"><i class="fas fa-hard-hat"></i> Detalhes da Obra</h3>
+      <button onclick="closeModalView()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-view-body" id="viewBody">
+      <!-- gerado pelo JS -->
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalView()">Fechar</button>
+      <button class="btn-secondary" onclick="editFromView()">
+        <i class="fas fa-edit"></i> Editar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: CONFIRMAR EXCLUSÃO
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalDelete">
+  <div class="dash-modal modal-sm">
+    <div class="dash-modal-header">
+      <h3 style="color:var(--error)"><i class="fas fa-trash-alt"></i> Excluir Obra</h3>
+      <button onclick="closeModalDelete()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body" style="text-align:center;padding:32px 28px">
+      <div class="delete-icon-wrap"><i class="fas fa-exclamation-triangle"></i></div>
+      <h4 id="deleteObraName" style="font-size:1.05rem;color:var(--dark);margin:16px 0 8px;font-weight:800"></h4>
+      <p style="font-size:.9rem;color:var(--gray);line-height:1.6">
+        Esta ação é irreversível. Todos os dados vinculados a esta obra (etapas, documentos, lançamentos financeiros) serão excluídos permanentemente.
+      </p>
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalDelete()">Cancelar</button>
+      <button class="btn-delete" onclick="confirmDelete()" id="btnConfirmDelete">
+        <i class="fas fa-trash-alt"></i> Sim, excluir
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     POPUP: CADASTRAR SISTEMA CONSTRUTIVO
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="popupSistema">
+  <div class="dash-modal modal-sm">
+    <div class="dash-modal-header">
+      <h3><i class="fas fa-drafting-compass"></i> Sistema Construtivo</h3>
+      <button onclick="closePopupSistema()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body" style="padding:24px">
+      <p style="font-size:.85rem;color:var(--gray);margin-bottom:18px">
+        Cadastre um novo sistema construtivo para usar nos cadastros de obras.
+      </p>
+      <div class="form-group">
+        <label>Nome do Sistema Construtivo *</label>
+        <input type="text" id="newSistema" placeholder="Ex: Alvenaria Convencional, Steel Frame..." />
+      </div>
+      <div class="popup-existing">
+        <span class="popup-existing-label">Sistemas cadastrados:</span>
+        <div id="listSistemas" class="popup-tags"></div>
+      </div>
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closePopupSistema()">Fechar</button>
+      <button class="btn-primary-dash" onclick="saveSistema()">
+        <i class="fas fa-plus"></i> Cadastrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     POPUP: CADASTRAR TIPO DE COBERTURA
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="popupCobertura">
+  <div class="dash-modal modal-sm">
+    <div class="dash-modal-header">
+      <h3><i class="fas fa-home"></i> Tipo de Cobertura</h3>
+      <button onclick="closePopupCobertura()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body" style="padding:24px">
+      <p style="font-size:.85rem;color:var(--gray);margin-bottom:18px">
+        Cadastre um novo tipo de cobertura para usar nos cadastros de obras.
+      </p>
+      <div class="form-group">
+        <label>Tipo de Cobertura *</label>
+        <input type="text" id="newCobertura" placeholder="Ex: Telha Cerâmica, Laje, Shingle..." />
+      </div>
+      <div class="popup-existing">
+        <span class="popup-existing-label">Coberturas cadastradas:</span>
+        <div id="listCoberturas" class="popup-tags"></div>
+      </div>
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closePopupCobertura()">Fechar</button>
+      <button class="btn-primary-dash" onclick="saveCobertura()">
+        <i class="fas fa-plus"></i> Cadastrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/obras.js"></script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cotações — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/cotacao.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html"        class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html"class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html"             class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html"            class="nav-item nav-sub-item"><i class="fas fa-ruler-combined"></i><span>Medição</span></a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item"><i class="fas fa-chart-line"></i><span>Análise</span></a>
+      </div>
+    </div>
+
+    <div class="nav-group open" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+          <div class="nav-active-bar"></div>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html"     class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i><span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html"      class="nav-item nav-sub-item"><i class="fas fa-users-cog"></i><span>Usuários</span></a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item"><i class="fas fa-sliders-h"></i><span>Empresa</span></a>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days" id="trialDays">15 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-link">Compras</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Cotações</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar cotações..." id="headerSearch" oninput="filterSearch(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down" style="font-size:.65rem;color:#94a3b8"></i>
+      </div>
+      <div class="user-dropdown hidden" id="userDropdown">
+        <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+        <a href="#" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1><i class="fas fa-file-invoice" style="color:#2563eb;margin-right:10px"></i>Cotações</h1>
+        <p>Gerencie solicitações de cotação e envie para fornecedores</p>
+      </div>
+      <button class="btn-new" onclick="openModalNova()">
+        <i class="fas fa-plus"></i> Nova Cotação
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card blue">
+        <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total de Cotações</div>
+        </div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon orange"><i class="fas fa-paper-plane"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statEnviadas">0</div>
+          <div class="stat-label">Enviadas</div>
+        </div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon purple"><i class="fas fa-comments"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statRespondidas">0</div>
+          <div class="stat-label">Respondidas</div>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statFinalizadas">0</div>
+          <div class="stat-label">Finalizadas</div>
+          <div id="statValorFinalizadas" style="font-size:.72rem;font-weight:700;color:#16a34a;margin-top:2px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <select class="filter-select" id="filterStatus" onchange="applyFilter()">
+          <option value="">Todos os status</option>
+          <option value="aberta">Aberta</option>
+          <option value="enviada">Enviada</option>
+          <option value="respondida">Respondida</option>
+          <option value="finalizada">Finalizada</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <span class="table-card-title"><i class="fas fa-list" style="color:#2563eb;margin-right:8px"></i>Lista de Cotações</span>
+        <span class="table-count" id="tableCount">0 cotações</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cotação</th>
+              <th>Itens</th>
+              <th>Fornecedores</th>
+              <th>Validade</th>
+              <th class="td-r">Valor</th>
+              <th>Status</th>
+              <th class="td-ctr">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state hidden" id="emptyState">
+        <i class="fas fa-file-invoice"></i>
+        <h3>Nenhuma cotação encontrada</h3>
+        <p>Clique em "Nova Cotação" para começar</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════ MODAL: NOVA / EDITAR COTAÇÃO ═══════════════ -->
+<div class="modal-overlay hidden" id="modalNova" onclick="closeModalNova(event)">
+  <div class="modal-box modal-box--lg">
+    <div class="modal-header">
+      <h2 id="modalNovaTitle"><i class="fas fa-plus-circle"></i> Nova Cotação</h2>
+      <button class="modal-close" onclick="closeModalNova()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Identificação -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-info-circle"></i> Identificação</div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label><i class="fas fa-tag"></i> Título da Cotação</label>
+            <input type="text" id="fTitulo" placeholder="Ex: Materiais para Fundação — Obra X" />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar"></i> Validade da Cotação</label>
+            <input type="date" id="fValidade" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label><i class="fas fa-hard-hat"></i> Obra (opcional)</label>
+            <select id="fObra" onchange="carregarEtapas()">
+              <option value="">— Nenhuma obra vinculada —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-layer-group"></i> Etapa (opcional)</label>
+            <select id="fEtapa" disabled>
+              <option value="">— Selecione uma obra primeiro —</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-sticky-note"></i> Observações</label>
+          <textarea id="fObservacoes" placeholder="Instruções para os fornecedores, prazo de entrega, condições..."></textarea>
+        </div>
+      </div>
+
+      <!-- Itens -->
+      <div class="form-section">
+        <div class="form-section-title">
+          <div class="itens-section-header" style="width:100%;display:flex;align-items:center;justify-content:space-between">
+            <span><i class="fas fa-list-check"></i> Itens da Cotação</span>
+            <button class="btn-add-item" onclick="addItemRow()">
+              <i class="fas fa-plus"></i> Adicionar Item
+            </button>
+          </div>
+        </div>
+        <div class="itens-table-wrap">
+          <table class="itens-table">
+            <thead>
+              <tr>
+                <th style="width:40%">Item</th>
+                <th style="width:20%">Grupo</th>
+                <th style="width:15%">Qtd</th>
+                <th style="width:10%">Un.</th>
+                <th style="width:15%">Justificativa</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="itensBody"></tbody>
+          </table>
+        </div>
+        <div class="itens-empty hidden" id="itensEmpty">
+          <i class="fas fa-box-open" style="margin-right:6px"></i>
+          Nenhum item adicionado. Clique em "Adicionar Item" para começar.
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalNova()">Cancelar</button>
+      <button class="btn-save" id="btnSalvar" onclick="salvarCotacao()">
+        <i class="fas fa-save"></i> Salvar Cotação
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL: ENVIAR PARA FORNECEDORES ═══════════════ -->
+<div class="modal-overlay hidden" id="modalEnviar" onclick="closeModalEnviar(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-paper-plane"></i> Enviar para Fornecedores</h2>
+      <button class="modal-close" onclick="closeModalEnviar()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;color:#64748b;margin-bottom:16px">
+        Selecione os fornecedores que receberão o link para responder esta cotação.
+      </p>
+      <div class="forn-list" id="fornList"></div>
+      <div id="linksGerados" class="hidden" style="margin-top:16px">
+        <div class="form-section-title" style="font-size:.75rem;font-weight:700;color:#22c55e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-check-circle"></i> Links gerados — compartilhe com os fornecedores
+        </div>
+        <div id="linksList"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalEnviar()">Fechar</button>
+      <button class="btn-primary" id="btnEnviar" onclick="enviarCotacao()">
+        <i class="fas fa-paper-plane"></i> Gerar Links
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL: VER COTAÇÃO ═══════════════ -->
+<div class="modal-overlay hidden" id="modalVer" onclick="closeModalVer(event)">
+  <div class="modal-box modal-box--lg">
+    <div class="modal-header">
+      <h2><i class="fas fa-eye"></i> Detalhes da Cotação</h2>
+      <button class="modal-close" onclick="closeModalVer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="modalVerBody">
+      <!-- preenchido via JS -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalVer()">Fechar</button>
+      <button class="btn-primary" id="btnVerMapa" onclick="irParaMapa()">
+        <i class="fas fa-table"></i> Ver Mapa de Cotação
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL: CONFIRMAR EXCLUSÃO ═══════════════ -->
+<div class="modal-overlay hidden" id="modalDelete" onclick="closeModalDelete(event)">
+  <div class="modal-box modal-box--sm">
+    <div class="modal-header modal-header--danger">
+      <h2><i class="fas fa-trash-alt"></i> Excluir Cotação</h2>
+      <button class="modal-close" onclick="closeModalDelete()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="delete-confirm-text">
+        Tem certeza que deseja excluir a cotação <strong id="deleteNome"></strong>?
+        Esta ação não pode ser desfeita.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalDelete()">Cancelar</button>
+      <button class="btn-danger" onclick="confirmDelete()">
+        <i class="fas fa-trash-alt"></i> Excluir
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/cotacao.js"></script>
+</body>
+</html>

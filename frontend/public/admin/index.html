@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Painel Admin — SISENG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+  <style>
+    /* ── Login ── */
+    #loginScreen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:#f1f5f9; padding:20px; }
+    .login-card { background:#fff; border-radius:20px; box-shadow:0 8px 40px rgba(0,0,0,.12); padding:40px; width:100%; max-width:400px; }
+    .login-logo { text-align:center; margin-bottom:28px; }
+    .login-logo .logo-wrap { display:inline-flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .login-logo i { font-size:2rem; color:#f97316; }
+    .login-logo span { font-size:1.5rem; font-weight:900; color:#0f172a; }
+    .login-logo strong { color:#f97316; }
+    .login-logo p { font-size:.82rem; color:#64748b; margin-top:4px; }
+    .login-badge { display:inline-block; background:#1e3a5f; color:#fff; padding:3px 12px; border-radius:50px; font-size:.7rem; font-weight:700; margin-top:6px; letter-spacing:.05em; }
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:.8rem; font-weight:700; color:#334155; margin-bottom:6px; }
+    .form-group label i { color:#2563eb; margin-right:5px; }
+    .form-group input { width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:.9rem; color:#0f172a; outline:none; transition:border .2s; font-family:inherit; box-sizing:border-box; }
+    .form-group input:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+    .btn-login { width:100%; padding:14px; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; border:none; border-radius:50px; font-size:.95rem; font-weight:800; cursor:pointer; margin-top:4px; transition:.2s; box-shadow:0 6px 20px rgba(249,115,22,.35); }
+    .btn-login:hover { opacity:.9; transform:translateY(-1px); }
+    #loginError { background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#dc2626; font-size:.8rem; text-align:center; padding:10px; margin-top:12px; display:none; }
+
+    /* ── App layout ── */
+    #appScreen { display:none; width:100%; height:100%; }
+    #loginScreen { position:fixed; inset:0; z-index:9999; }
+    body.app-mode { overflow:hidden; }
+
+    /* ── Sidebar extra styles ── */
+    .sidebar-badge { display:inline-block; background:#f97316; color:#fff; padding:2px 8px; border-radius:50px; font-size:.62rem; font-weight:800; margin-left:6px; letter-spacing:.04em; vertical-align:middle; }
+
+    /* ── Stats ── */
+    .stats-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .stat-card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,.07); padding:20px 22px; display:flex; align-items:center; gap:14px; border-bottom:3px solid transparent; }
+    .stat-card.blue   { border-color:#2563eb; }
+    .stat-card.orange { border-color:#f97316; }
+    .stat-card.green  { border-color:#22c55e; }
+    .stat-card.purple { border-color:#7c3aed; }
+    .stat-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .stat-icon.blue   { background:#dbeafe; color:#2563eb; }
+    .stat-icon.orange { background:#ffedd5; color:#ea580c; }
+    .stat-icon.green  { background:#dcfce7; color:#16a34a; }
+    .stat-icon.purple { background:#ede9fe; color:#7c3aed; }
+    .stat-value { font-size:1.7rem; font-weight:900; color:#0f172a; line-height:1; }
+    .stat-label { font-size:.75rem; color:#64748b; font-weight:600; margin-top:3px; }
+    .stat-sub   { font-size:.7rem; color:#94a3b8; margin-top:2px; }
+
+    /* ── Tabs ── */
+    .page-tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:2px solid #e2e8f0; }
+    .page-tab { padding:10px 20px; font-size:.85rem; font-weight:700; color:#64748b; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:.2s; display:flex; align-items:center; gap:7px; }
+    .page-tab.active { color:#2563eb; border-bottom-color:#2563eb; }
+    .page-tab:hover { color:#0f172a; }
+
+    /* ── Card table ── */
+    .card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,.07); overflow:hidden; margin-bottom:20px; }
+    .card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #f1f5f9; flex-wrap:wrap; gap:12px; }
+    .card-title  { font-weight:800; color:#0f172a; font-size:.95rem; display:flex; align-items:center; gap:8px; }
+    .card-title i { color:#2563eb; }
+    .table-wrap { overflow-x:auto; }
+    .data-table { width:100%; border-collapse:collapse; font-size:.83rem; }
+    .data-table th { background:#f8fafc; color:#64748b; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:12px 16px; text-align:left; border-bottom:1px solid #e2e8f0; white-space:nowrap; }
+    .data-table td { padding:14px 16px; border-bottom:1px solid #f1f5f9; color:#334155; vertical-align:middle; }
+    .data-table tbody tr:hover { background:#f8fafc; }
+    .td-ctr { text-align:center; }
+
+    /* ── Badges ── */
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:50px; font-size:.71rem; font-weight:700; white-space:nowrap; }
+    .badge-trial    { background:#ffedd5; color:#ea580c; }
+    .badge-ativo    { background:#dcfce7; color:#15803d; }
+    .badge-suspenso { background:#fee2e2; color:#dc2626; }
+    .badge-cancelado{ background:#f1f5f9; color:#64748b; }
+
+    /* ── Trial info ── */
+    .trial-ok  { color:#16a34a; font-weight:700; font-size:.8rem; }
+    .trial-warn{ color:#ea580c; font-weight:700; font-size:.8rem; }
+    .trial-exp { color:#dc2626; font-weight:700; font-size:.8rem; }
+
+    /* ── Actions ── */
+    .row-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .btn-sm { padding:5px 12px; border-radius:6px; font-size:.73rem; font-weight:700; cursor:pointer; border:none; transition:.2s; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; }
+    .btn-sm.blue  { background:#2563eb; color:#fff; }
+    .btn-sm.blue:hover  { background:#1d4ed8; }
+    .btn-sm.green { background:#16a34a; color:#fff; }
+    .btn-sm.green:hover { background:#15803d; }
+    .btn-sm.red   { background:#ef4444; color:#fff; }
+    .btn-sm.red:hover   { background:#dc2626; }
+    .btn-sm.gray  { background:#f1f5f9; color:#475569; border:1px solid #e2e8f0; }
+    .btn-sm.gray:hover  { background:#e2e8f0; }
+
+    /* ── Search ── */
+    .search-wrap { position:relative; }
+    .search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:.8rem; }
+    .search-wrap input { padding:8px 12px 8px 32px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.82rem; outline:none; font-family:inherit; color:#0f172a; width:220px; }
+    .search-wrap input:focus { border-color:#2563eb; }
+
+    /* ── Modal ── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.5); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.hidden { display:none; }
+    .modal-box { background:#fff; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,.15); width:100%; max-width:460px; overflow:hidden; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #e2e8f0; }
+    .modal-header h2 { font-size:1rem; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px; }
+    .modal-close { background:none; border:none; font-size:1.1rem; color:#94a3b8; cursor:pointer; }
+    .modal-body { padding:24px; }
+    .modal-footer { display:flex; gap:12px; justify-content:flex-end; padding:16px 24px; border-top:1px solid #e2e8f0; }
+    .m-form-group { margin-bottom:16px; }
+    .m-form-group label { display:block; font-size:.8rem; font-weight:700; color:#334155; margin-bottom:6px; }
+    .m-form-group select, .m-form-group input { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.875rem; color:#0f172a; outline:none; font-family:inherit; box-sizing:border-box; }
+    .m-form-group select:focus, .m-form-group input:focus { border-color:#2563eb; }
+    .btn-save   { background:#2563eb; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:.875rem; font-weight:700; cursor:pointer; }
+    .btn-save:hover { background:#1d4ed8; }
+    .btn-cancel { background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; border-radius:8px; padding:10px 20px; font-size:.875rem; font-weight:600; cursor:pointer; }
+
+    /* ── Toast ── */
+    #toastContainer { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+    .toast { display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:10px; font-size:.875rem; font-weight:600; box-shadow:0 4px 20px rgba(0,0,0,.12); animation:slideIn .3s ease; background:#fff; }
+    .toast.success { border-left:4px solid #22c55e; color:#15803d; }
+    .toast.error   { border-left:4px solid #ef4444; color:#dc2626; }
+    @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+    @media(max-width:900px) { .stats-bar { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:500px) { .stats-bar { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-wrap">
+        <i class="fas fa-hard-hat"></i>
+        <span>SIS<strong>ENG</strong></span>
+      </div>
+      <p>Acesso restrito à equipe interna</p>
+      <span class="login-badge">PAINEL GERENCIAL</span>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-envelope"></i> E-mail</label>
+      <input type="email" id="loginEmail" placeholder="admin@siseng.com.br" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-lock"></i> Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn-login" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+    <div id="loginError"><i class="fas fa-exclamation-circle"></i> E-mail ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div id="appScreen">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><i class="fas fa-hard-hat"></i><span>SIS<strong>ENG</strong></span></div>
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:#f97316">SA</div>
+      <div class="user-info">
+        <span class="user-name">Super Admin <span class="sidebar-badge">ADMIN</span></span>
+        <span class="user-role">Painel Gerencial</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Gerencial</div>
+      <a href="#" class="nav-item active" onclick="showTab('dashboard',this)"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+      <a href="#" class="nav-item" onclick="showTab('empresas',this)"><i class="fas fa-building"></i><span>Empresas</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-upgrade" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- MAIN -->
+  <div class="main-wrapper" id="mainWrapper">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+        <div class="breadcrumb">
+          <i class="fas fa-shield-halved" style="color:#2563eb"></i>
+          <i class="fas fa-chevron-right bc-sep"></i>
+          <span class="bc-current" id="bcCurrent">Dashboard</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span style="font-size:.78rem;color:#94a3b8" id="lastUpdate"></span>
+        <div class="header-divider"></div>
+        <button onclick="logout()" style="background:none;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 14px;font-size:.78rem;font-weight:700;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- TAB DASHBOARD -->
+      <div id="tabDashboard">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <h1 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin:0"><i class="fas fa-chart-pie" style="color:#2563eb;margin-right:10px"></i>Dashboard</h1>
+            <p style="font-size:.82rem;color:#64748b;margin:4px 0 0">Visão geral de todas as empresas no sistema</p>
+          </div>
+          <button onclick="loadDashboard();loadEmpresas()" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;color:#475569;cursor:pointer;display:flex;align-items:center;gap:6px">
+            <i class="fas fa-rotate-right"></i> Atualizar
+          </button>
+        </div>
+
+        <div class="stats-bar">
+          <div class="stat-card blue">
+            <div class="stat-icon blue"><i class="fas fa-building"></i></div>
+            <div>
+              <div class="stat-value" id="kpiTotal">—</div>
+              <div class="stat-label">Total Empresas</div>
+              <div class="stat-sub" id="kpiSub">—</div>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+            <div>
+              <div class="stat-value" id="kpiTrial">—</div>
+              <div class="stat-label">Em Trial</div>
+              <div class="stat-sub">testando o sistema</div>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div>
+              <div class="stat-value" id="kpiAtivas">—</div>
+              <div class="stat-label">Ativas (pagas)</div>
+              <div class="stat-sub" id="kpiMrr">MRR: —</div>
+            </div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon purple"><i class="fas fa-users"></i></div>
+            <div>
+              <div class="stat-value" id="kpiUsuarios">—</div>
+              <div class="stat-label">Usuários</div>
+              <div class="stat-sub" id="kpiObras">— obras</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-clock"></i> Últimos cadastros</div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Empresa</th>
+                  <th>E-mail</th>
+                  <th>Status</th>
+                  <th>Trial expira</th>
+                  <th class="td-ctr">Usuários</th>
+                  <th class="td-ctr">Obras</th>
+                  <th>Cadastro</th>
+                </tr>
+              </thead>
+              <tbody id="recentesBody">
+                <tr><td colspan="7" style="text-align:center;padding:32px;color:#94a3b8"><i class="fas fa-circle-notch fa-spin"></i> Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB EMPRESAS -->
+      <div id="tabEmpresas" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <div>
+            <h1 style="font-size:1.5rem;font-weight:800;color:#0f172a;margin:0"><i class="fas fa-building" style="color:#2563eb;margin-right:10px"></i>Empresas</h1>
+            <p style="font-size:.82rem;color:#64748b;margin:4px 0 0">Gerencie todas as empresas cadastradas</p>
+          </div>
+          <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar empresa..." oninput="filtrarEmpresas(this.value)"/>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Empresa</th>
+                  <th>E-mail</th>
+                  <th>Plano</th>
+                  <th>Status</th>
+                  <th>Trial</th>
+                  <th class="td-ctr">Usuários</th>
+                  <th class="td-ctr">Obras</th>
+                  <th class="td-ctr">Cotações</th>
+                  <th>Cadastro</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="empresasBody">
+                <tr><td colspan="10" style="text-align:center;padding:32px;color:#94a3b8"><i class="fas fa-circle-notch fa-spin"></i> Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL EDITAR EMPRESA -->
+<div class="modal-overlay hidden" id="modalEmpresa" onclick="closeModalEmpresa(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-building" style="color:#2563eb"></i> <span id="modalEmpresaNome">Empresa</span></h2>
+      <button class="modal-close" onclick="closeModalEmpresa()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editEmpresaId"/>
+      <div class="m-form-group">
+        <label>Status da conta</label>
+        <select id="editStatus">
+          <option value="trial">Trial — testando</option>
+          <option value="ativo">Ativo — assinante pago</option>
+          <option value="suspenso">Suspenso</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+      <div class="m-form-group">
+        <label>Plano</label>
+        <select id="editPlano"><option value="">Sem plano</option></select>
+      </div>
+      <div class="m-form-group">
+        <label>Data de expiração do trial</label>
+        <input type="date" id="editTrial"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalEmpresa()">Cancelar</button>
+      <button class="btn-save" onclick="salvarEmpresa()"><i class="fas fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+const API = '/api/admin';
+let adminToken = sessionStorage.getItem('admin_token') || '';
+let empresas = [], planos = [];
+
+/* ── Auth ── */
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPass').value;
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    const res  = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    adminToken = data.token;
+    sessionStorage.setItem('admin_token', adminToken);
+    showApp();
+  } catch { document.getElementById('loginError').style.display = 'block'; }
+}
+
+function logout() {
+  sessionStorage.removeItem('admin_token');
+  adminToken = '';
+  document.getElementById('appScreen').style.display   = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+async function apiAdmin(method, path, body) {
+  const opts = { method, headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${adminToken}` } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const res  = await fetch(`${API}${path}`, opts);
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) { logout(); throw new Error('Sessão expirada.'); }
+  if (!res.ok) throw new Error(data.message || `Erro ${res.status}`);
+  return data;
+}
+
+/* ── App ── */
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display   = 'contents';
+  document.body.classList.add('app-mode');
+  // init sidebar
+  const toggle  = document.getElementById('sidebarToggle');
+  const sidebar  = document.getElementById('sidebar');
+  const wrapper  = document.getElementById('mainWrapper');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const menuBtn  = document.getElementById('menuBtn');
+  if (toggle)  toggle.addEventListener('click', () => { sidebar.classList.toggle('collapsed'); wrapper.classList.toggle('sidebar-collapsed'); });
+  if (menuBtn) menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
+  if (overlay) overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+  loadDashboard();
+  loadEmpresas();
+  loadPlanos();
+}
+
+function showTab(tab, el) {
+  document.getElementById('tabDashboard').style.display = tab==='dashboard' ? '' : 'none';
+  document.getElementById('tabEmpresas').style.display  = tab==='empresas'  ? '' : 'none';
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('bcCurrent').textContent = tab==='dashboard' ? 'Dashboard' : 'Empresas';
+}
+
+/* ── Dashboard ── */
+async function loadDashboard() {
+  try {
+    const d = await apiAdmin('GET', '/dashboard');
+    document.getElementById('kpiTotal').textContent    = d.total_empresas || 0;
+    document.getElementById('kpiTrial').textContent    = d.em_trial || 0;
+    document.getElementById('kpiAtivas').textContent   = d.ativas || 0;
+    document.getElementById('kpiUsuarios').textContent = d.total_usuarios || 0;
+    document.getElementById('kpiSub').textContent      = `${d.suspensas||0} suspensas · ${d.canceladas||0} canceladas`;
+    document.getElementById('kpiObras').textContent    = `${d.total_obras||0} obras`;
+    document.getElementById('lastUpdate').textContent  = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+
+    const tbody = document.getElementById('recentesBody');
+    tbody.innerHTML = (d.recentes||[]).map(e => `
+      <tr>
+        <td style="font-weight:700;color:#0f172a">${e.razao_social}</td>
+        <td style="color:#64748b">${e.email}</td>
+        <td>${statusBadge(e.status)}</td>
+        <td>${trialHtml(e.trial_expira)}</td>
+        <td class="td-ctr">${e.total_usuarios}</td>
+        <td class="td-ctr">${e.total_obras}</td>
+        <td style="color:#94a3b8;font-size:.78rem">${formatDate(e.criado_em)}</td>
+      </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Nenhuma empresa ainda.</td></tr>';
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+/* ── Empresas ── */
+async function loadEmpresas() {
+  try {
+    empresas = await apiAdmin('GET', '/empresas');
+    renderEmpresas(empresas);
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+function renderEmpresas(list) {
+  const tbody = document.getElementById('empresasBody');
+  if (!list.length) { tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:#94a3b8">Nenhuma empresa.</td></tr>'; return; }
+  tbody.innerHTML = list.map(e => `
+    <tr>
+      <td>
+        <div style="font-weight:700;color:#0f172a">${e.razao_social}</div>
+        ${e.cnpj?`<div style="font-size:.73rem;color:#94a3b8">${e.cnpj}</div>`:''}
+      </td>
+      <td style="color:#64748b;font-size:.82rem">${e.email}</td>
+      <td>
+        <div style="font-weight:600;color:#0f172a;font-size:.82rem">${e.plano_nome||'—'}</div>
+        ${e.plano_preco?`<div style="font-size:.72rem;color:#16a34a;font-weight:700">R$ ${parseFloat(e.plano_preco).toLocaleString('pt-BR')}/mês</div>`:''}
+      </td>
+      <td>${statusBadge(e.status)}</td>
+      <td>${trialHtml(e.trial_expira)}</td>
+      <td class="td-ctr" style="color:#64748b">${e.total_usuarios}</td>
+      <td class="td-ctr" style="color:#64748b">${e.total_obras}</td>
+      <td class="td-ctr" style="color:#64748b">${e.total_cotacoes}</td>
+      <td style="color:#94a3b8;font-size:.78rem">${formatDate(e.criado_em)}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-sm blue" onclick="openModalEmpresa(${e.id})"><i class="fas fa-pen"></i> Editar</button>
+          ${e.status==='ativo'    ? `<button class="btn-sm gray" onclick="setStatus(${e.id},'suspenso')">Suspender</button>`:''}
+          ${e.status==='suspenso' ? `<button class="btn-sm green" onclick="setStatus(${e.id},'ativo')">Reativar</button>`:''}
+          ${e.status==='trial'    ? `<button class="btn-sm green" onclick="setStatus(${e.id},'ativo')">Ativar</button>`:''}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function filtrarEmpresas(q) {
+  const l = q.toLowerCase();
+  renderEmpresas(empresas.filter(e => e.razao_social.toLowerCase().includes(l) || e.email.toLowerCase().includes(l) || (e.cnpj||'').includes(l)));
+}
+
+/* ── Modal ── */
+async function loadPlanos() {
+  try {
+    planos = await apiAdmin('GET', '/planos');
+    const sel = document.getElementById('editPlano');
+    planos.forEach(p => { const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.nome} — R$ ${parseFloat(p.preco).toLocaleString('pt-BR')}/mês`; sel.appendChild(o); });
+  } catch(_) {}
+}
+
+function openModalEmpresa(id) {
+  const e = empresas.find(x=>x.id===id);
+  if (!e) return;
+  document.getElementById('editEmpresaId').value = id;
+  document.getElementById('modalEmpresaNome').textContent = e.razao_social;
+  document.getElementById('editStatus').value = e.status;
+  document.getElementById('editPlano').value  = e.plano_id || '';
+  document.getElementById('editTrial').value  = e.trial_expira ? e.trial_expira.split('T')[0] : '';
+  document.getElementById('modalEmpresa').classList.remove('hidden');
+}
+
+function closeModalEmpresa(ev) {
+  if (ev && ev.target !== document.getElementById('modalEmpresa')) return;
+  document.getElementById('modalEmpresa').classList.add('hidden');
+}
+
+async function salvarEmpresa() {
+  const id    = document.getElementById('editEmpresaId').value;
+  const body  = {
+    status:      document.getElementById('editStatus').value,
+    plano_id:    document.getElementById('editPlano').value || null,
+    trial_expira:document.getElementById('editTrial').value || null
+  };
+  try {
+    await apiAdmin('PUT', `/empresas/${id}`, body);
+    showToast('Empresa atualizada!');
+    closeModalEmpresa();
+    loadEmpresas(); loadDashboard();
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+async function setStatus(id, status) {
+  try {
+    await apiAdmin('PUT', `/empresas/${id}`, { status });
+    showToast(`Status alterado para "${status}".`);
+    loadEmpresas(); loadDashboard();
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+/* ── Helpers ── */
+function statusBadge(s) {
+  const map   = { trial:'badge-trial', ativo:'badge-ativo', suspenso:'badge-suspenso', cancelado:'badge-cancelado' };
+  const label = { trial:'Trial', ativo:'Ativo', suspenso:'Suspenso', cancelado:'Cancelado' };
+  return `<span class="badge ${map[s]||''}">${label[s]||s}</span>`;
+}
+
+function trialHtml(d) {
+  if (!d) return '<span style="color:#94a3b8">—</span>';
+  const dias = Math.ceil((new Date(d) - new Date()) / 86400000);
+  const cls  = dias < 0 ? 'trial-exp' : dias <= 3 ? 'trial-warn' : 'trial-ok';
+  const txt  = dias < 0 ? 'Expirado' : `${dias}d restantes`;
+  return `<span class="${cls}">${txt}</span><br><span style="color:#94a3b8;font-size:.72rem">${formatDate(d)}</span>`;
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+/* ── Init ── */
+if (adminToken) showApp();
+</script>
+</body>
+</html>

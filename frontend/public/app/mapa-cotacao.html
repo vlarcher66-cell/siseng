@@ -1,0 +1,726 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa de Cotação — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/cotacao.css" />
+  <style>
+    /* ── Mapa específico ──────────────────────────── */
+    .mapa-select-wrap {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .mapa-select-wrap label {
+      font-weight: 700; font-size: .85rem; color: #334155;
+      white-space: nowrap;
+    }
+    .mapa-select-wrap select {
+      flex: 1; min-width: 260px;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: .875rem; background: #fff;
+    }
+    .mapa-select-wrap select:focus { outline: none; border-color: #2563eb; }
+
+    .mapa-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .mapa-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f1f5f9;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .mapa-card-title { font-weight: 700; color: #0f172a; font-size: .95rem; display: flex; align-items: center; gap: 8px; }
+    .mapa-card-title i { color: #2563eb; }
+    .mapa-info { font-size: .78rem; color: #64748b; }
+
+    .mapa-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 16px rgba(37,99,235,.07), 0 1px 4px rgba(0,0,0,.05);
+    }
+    .mapa-table {
+      width: 100%; border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    /* ── th Item (col fixa esquerda) ── */
+    .mapa-table .th-item {
+      background: #1e3a5f;
+      color: rgba(255,255,255,.7);
+      padding: 12px 10px;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      text-align: center; white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,.1);
+      width: 160px; min-width: 160px; max-width: 160px;
+    }
+
+    /* ── th Qtd ── */
+    .mapa-table .th-qty {
+      background: #1e3a5f;
+      color: rgba(255,255,255,.7);
+      padding: 12px 8px;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      text-align: center; white-space: nowrap;
+      border-right: 2px solid rgba(255,255,255,.15);
+      width: 70px; min-width: 70px; max-width: 70px;
+    }
+
+    /* ── th Fornecedor (linha 1) ── */
+    .mapa-table .th-forn {
+      background: #2563eb;
+      color: #fff;
+      padding: 12px 14px;
+      font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .07em;
+      text-align: center; white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,.12);
+      width: 160px; min-width: 160px; max-width: 160px;
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,.1);
+      cursor: default;
+    }
+    .th-forn-inner {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 136px;
+      margin: 0 auto;
+    }
+
+    /* ── th Menor Preço ── */
+    .mapa-table .th-menor {
+      background: #0f172a;
+      color: rgba(255,255,255,.85);
+      padding: 12px 14px;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .07em;
+      text-align: center; white-space: nowrap;
+      width: 160px; min-width: 160px; max-width: 160px;
+    }
+
+    /* ── th Sub (Unit./Total — linha 2) ── */
+    .mapa-table .th-sub {
+      background: #fff5f5;
+      color: #f87171;
+      padding: 4px 10px;
+      font-size: .58rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .07em;
+      text-align: center; white-space: nowrap;
+      border-right: 1px solid #fee2e2;
+      border-bottom: 2px solid #fecaca;
+    }
+
+    /* ── Células body ── */
+    .mapa-table td {
+      padding: 8px 10px;
+      border-top: 1px solid #f1f5f9;
+      border-right: 1px solid #f1f5f9;
+      font-size: .8rem;
+      vertical-align: middle;
+    }
+    .mapa-table td:last-child {
+      border-right: none;
+      background: #f8fafc;
+    }
+    .mapa-table tbody tr:hover td { background: #f0f7ff; }
+    .mapa-table tbody tr:hover td:last-child { background: #e8f0fe; }
+    .td-item-nome {
+      font-weight: 600; color: #0f172a;
+      max-width: 140px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .td-item-un   { font-size: .72rem; color: #94a3b8; }
+    .td-qty       { text-align: center; font-weight: 600; white-space: nowrap; }
+    .td-preco     { text-align: center; min-width: 130px; }
+    .preco-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .preco-unit {
+      font-weight: 700; font-size: .8rem; color: #334155;
+      white-space: nowrap;
+    }
+    .preco-total {
+      font-size: .67rem; color: #94a3b8; white-space: nowrap;
+    }
+    .preco-marca  { font-size: .65rem; color: #64748b; font-style: italic; }
+    .preco-sem    { color: #cbd5e1; font-size: .75rem; }
+
+    /* Destaque menor preço */
+    .td-preco.menor {
+      background: rgba(34,197,94,.07);
+    }
+    .preco-badge-menor {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: #dcfce7; color: #15803d;
+      font-size: .58rem; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px;
+      margin-bottom: 1px;
+    }
+
+    /* Seleção de vencedor */
+    .td-preco.selecionado {
+      background: rgba(37,99,235,.08);
+      border-left: 3px solid #2563eb;
+    }
+    .preco-select-btn {
+      margin-top: 2px;
+      padding: 2px 8px; border-radius: 6px;
+      border: 1.5px solid #e2e8f0; background: #fff;
+      font-size: .64rem; font-weight: 600; color: #64748b;
+      cursor: pointer; transition: .2s;
+    }
+    .preco-select-btn:hover { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
+    .preco-select-btn.selected { border-color: #2563eb; background: #2563eb; color: #fff; }
+
+    /* Totais row */
+    .mapa-table tfoot tr { background: #f8fafc; }
+    .mapa-table tfoot td {
+      padding: 8px 10px;
+      font-weight: 700; font-size: .78rem;
+      border-top: 2px solid #e2e8f0;
+      border-right: 1px solid #f1f5f9;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .mapa-table tfoot td:last-child { border-right: none; }
+    .td-total-label { text-align: left; color: #334155; }
+    .td-total-val   { color: #0f172a; font-size: .82rem; }
+    .td-total-menor { color: #15803d; }
+
+    /* ── Coluna Menor Preço (body) ── */
+    .td-menor-col {
+      text-align: center;
+      background: #f0fdf4;
+      border-left: 2px solid #bbf7d0;
+    }
+    .menor-unit {
+      font-weight: 800; font-size: .85rem;
+      color: #15803d; white-space: nowrap;
+    }
+
+    /* Legenda */
+    .mapa-legenda {
+      display: flex; align-items: center; gap: 16px;
+      padding: 12px 20px; background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      font-size: .75rem; color: #64748b;
+      flex-wrap: wrap;
+    }
+    .legenda-item { display: flex; align-items: center; gap: 6px; }
+    .legenda-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* Pedido section */
+    .pedido-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 20px 24px;
+    }
+    .pedido-section-title {
+      font-size: .95rem; font-weight: 700; color: #0f172a;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pedido-section-title i { color: #2563eb; }
+    .pedido-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .pedido-forn-card {
+      border: 1.5px solid #e2e8f0; border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .pedido-forn-card.winner {
+      border-color: #2563eb; background: #eff6ff;
+    }
+    .pedido-forn-nome  { font-weight: 700; font-size: .875rem; color: #0f172a; }
+    .pedido-forn-itens { font-size: .75rem; color: #64748b; margin: 4px 0; }
+    .pedido-forn-total { font-size: 1rem; font-weight: 800; color: #2563eb; }
+
+    .placeholder-mapa {
+      text-align: center; padding: 80px 20px;
+      color: #94a3b8;
+    }
+    .placeholder-mapa i  { font-size: 3rem; margin-bottom: 16px; color: #cbd5e1; }
+    .placeholder-mapa h3 { font-size: 1.1rem; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+    .placeholder-mapa p  { font-size: .875rem; }
+
+    /* ── Negociação ──────────────────────────────── */
+    .btn-negociar {
+      margin-top: 8px; width: 100%;
+      padding: 6px 12px; border-radius: 6px;
+      border: 1.5px solid #f97316; background: #fff7ed;
+      font-size: .72rem; font-weight: 700; color: #ea580c;
+      cursor: pointer; transition: .2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-negociar:hover { background: #f97316; color: #fff; }
+
+    .preco-original {
+      font-size: .65rem; color: #94a3b8;
+      text-decoration: line-through; white-space: nowrap;
+    }
+    .preco-unit.negociado { color: #16a34a; font-weight: 800; }
+
+    /* ── Modal Negociação ────────────────────────── */
+    .modal-negoc { max-width: 680px; max-height: 90vh; display: flex; flex-direction: column; }
+    .negoc-top {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      padding: 16px 24px; background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .negoc-grupo label { font-size: .75rem; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px; }
+    .negoc-grupo input {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: .875rem; font-family: inherit; outline: none;
+    }
+    .negoc-grupo input:focus { border-color: #f97316; }
+    .negoc-calc {
+      grid-column: 1/-1;
+      font-size: .78rem; color: #ea580c; font-weight: 600;
+      min-height: 18px;
+    }
+    .negoc-apply-btn {
+      padding: 9px 18px; border-radius: 8px;
+      border: none; background: #f97316; color: #fff;
+      font-size: .82rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background .2s;
+    }
+    .negoc-apply-btn:hover { background: #ea580c; }
+
+    .negoc-table-wrap { overflow-y: auto; flex: 1; padding: 0 24px; }
+    .negoc-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .negoc-table th {
+      padding: 8px 10px; font-size: .72rem; font-weight: 700;
+      color: #64748b; text-transform: uppercase; letter-spacing: .04em;
+      border-bottom: 1px solid #f1f5f9; background: #f8fafc;
+    }
+    .negoc-table td { padding: 10px 10px; border-bottom: 1px solid #f8fafc; vertical-align: middle; }
+    .negoc-input {
+      width: 120px; padding: 7px 10px;
+      border: 1.5px solid #e2e8f0; border-radius: 6px;
+      font-size: .875rem; font-family: inherit; text-align: right; outline: none;
+    }
+    .negoc-input:focus { border-color: #2563eb; }
+    .negoc-input.alterado { border-color: #22c55e; background: #f0fdf4; color: #16a34a; font-weight: 700; }
+
+    .negoc-footer-totals {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px; background: #f8fafc;
+      border-top: 1px solid #f1f5f9; font-size: .85rem;
+    }
+    .negoc-footer-totals strong { color: #16a34a; font-size: 1rem; }
+    .negoc-desc-result { font-size: .78rem; color: #ea580c; font-weight: 600; }
+
+    /* ── Botão Compartilhar ────────────────────── */
+    .btn-share {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 50px;
+      border: 1.5px solid #2563eb; background: #eff6ff;
+      color: #2563eb; font-size: .875rem; font-weight: 700;
+      cursor: pointer; transition: .2s;
+    }
+    .btn-share:hover { background: #2563eb; color: #fff; }
+
+    /* ── Modal Share ───────────────────────────── */
+    .modal-share { max-width: 520px; }
+    .share-link-wrap {
+      display: flex; gap: 8px; align-items: center;
+      background: #f8fafc; border: 1.5px solid #e2e8f0;
+      border-radius: 10px; padding: 4px 4px 4px 14px;
+      margin: 16px 0;
+    }
+    .share-link-input {
+      flex: 1; border: none; background: transparent;
+      font-size: .82rem; color: #334155; outline: none;
+      font-family: monospace;
+    }
+    .btn-copy-link {
+      padding: 8px 16px; border-radius: 8px;
+      border: none; background: #2563eb; color: #fff;
+      font-size: .8rem; font-weight: 700; cursor: pointer;
+      white-space: nowrap; display: flex; align-items: center; gap: 6px;
+      transition: background .2s;
+    }
+    .btn-copy-link:hover { background: #1d4ed8; }
+    .share-hint {
+      font-size: .78rem; color: #64748b;
+      display: flex; align-items: center; gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html"         class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html"  class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html"             class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html"            class="nav-item nav-sub-item"><i class="fas fa-ruler-combined"></i><span>Medição</span></a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item"><i class="fas fa-chart-line"></i><span>Análise</span></a>
+      </div>
+    </div>
+    <div class="nav-group open" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item"><i class="fas fa-file-invoice"></i><span>Cotações</span></a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+          <div class="nav-active-bar"></div>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html"     class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i><span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html"      class="nav-item nav-sub-item"><i class="fas fa-users-cog"></i><span>Usuários</span></a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item"><i class="fas fa-sliders-h"></i><span>Empresa</span></a>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">15 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <a href="cotacao.html" class="bc-link">Compras</a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Mapa de Cotação</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Mapa de Cotação" readonly />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+      </div>
+      <div class="user-dropdown hidden" id="userDropdown">
+        <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1><i class="fas fa-table" style="color:#2563eb;margin-right:10px"></i>Mapa de Cotação</h1>
+        <p>Compare propostas, selecione vencedores e gere pedidos de compra</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn-share" onclick="compartilharMapa()" id="btnCompartilhar" style="display:none">
+          <i class="fas fa-share-nodes"></i> Compartilhar
+        </button>
+        <button class="btn-new" onclick="gerarPedido()" id="btnGerarPedido" style="display:none">
+          <i class="fas fa-shopping-bag"></i> Gerar Pedido de Compra
+        </button>
+      </div>
+    </div>
+
+    <!-- Seletor de cotação -->
+    <div class="mapa-select-wrap">
+      <label><i class="fas fa-file-invoice" style="color:#2563eb;margin-right:6px"></i>Selecione a Cotação:</label>
+      <select id="selectCotacao" onchange="loadMapa(this.value)">
+        <option value="">— Selecione uma cotação com respostas —</option>
+      </select>
+      <a href="cotacao.html" style="font-size:.82rem;color:#2563eb;text-decoration:none;white-space:nowrap">
+        <i class="fas fa-arrow-left" style="margin-right:4px"></i>Voltar às Cotações
+      </a>
+    </div>
+
+    <!-- Placeholder -->
+    <div id="mapaPlaceholder">
+      <div class="placeholder-mapa">
+        <i class="fas fa-table"></i>
+        <h3>Selecione uma cotação para ver o mapa comparativo</h3>
+        <p>Somente cotações com respostas de fornecedores aparecem aqui.</p>
+      </div>
+    </div>
+
+    <!-- Mapa (hidden inicialmente) -->
+    <div id="mapaContent" class="hidden">
+
+      <!-- Tabela comparativa -->
+      <div class="mapa-card">
+        <div class="mapa-card-header">
+          <div class="mapa-card-title"><i class="fas fa-table"></i> Comparativo de Preços</div>
+          <div class="mapa-info" id="mapaInfo"></div>
+        </div>
+        <div class="mapa-wrap">
+          <table class="mapa-table" id="mapaTable">
+            <thead id="mapaTableHead"></thead>
+            <tbody id="mapaTableBody"></tbody>
+            <tfoot id="mapaTableFoot"></tfoot>
+          </table>
+        </div>
+        <div class="mapa-legenda">
+          <div class="legenda-item">
+            <div class="legenda-dot" style="background:#dcfce7;border:2px solid #86efac"></div>
+            Menor preço
+          </div>
+          <div class="legenda-item">
+            <div class="legenda-dot" style="background:#dbeafe;border:2px solid #93c5fd"></div>
+            Selecionado como vencedor
+          </div>
+          <div class="legenda-item">
+            <i class="fas fa-minus" style="color:#e2e8f0"></i>
+            Sem proposta
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumo por fornecedor -->
+      <div class="pedido-section" id="pedidoSection">
+        <div class="pedido-section-title">
+          <i class="fas fa-calculator"></i> Resumo por Fornecedor
+        </div>
+        <div class="pedido-summary" id="pedidoSummary"></div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="gerarPedido()" id="btnGerarPedido2">
+            <i class="fas fa-shopping-bag"></i> Gerar Pedido de Compra
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal Justificativa -->
+<div class="modal-overlay hidden" id="modalJustificativa" onclick="closeModalJust(event)">
+  <div class="modal-box modal-box--sm">
+    <div class="modal-header">
+      <h2><i class="fas fa-comment-alt"></i> Justificativa</h2>
+      <button class="modal-close" onclick="closeModalJust()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.82rem;color:#64748b;margin-bottom:12px">
+        O fornecedor selecionado não oferece o menor preço. Informe a justificativa:
+      </p>
+      <div class="form-group">
+        <textarea id="fJustificativa" rows="3" placeholder="Ex: Prazo de entrega melhor, condições de pagamento, histórico de qualidade..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalJust()">Cancelar</button>
+      <button class="btn-primary" onclick="confirmarSelecao()"><i class="fas fa-check"></i> Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Negociação -->
+<div class="modal-overlay hidden" id="modalNegociacao">
+  <div class="modal-box modal-negoc">
+    <div class="modal-header">
+      <h2><i class="fas fa-handshake" style="color:#f97316;margin-right:8px"></i>Negociar — <span id="negocFornNome"></span></h2>
+      <button class="modal-close" onclick="fecharNegociacao()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Área de desconto global -->
+    <div class="negoc-top">
+      <div class="negoc-grupo">
+        <label>Total cotado</label>
+        <div style="font-size:1.1rem;font-weight:800;color:#0f172a;padding:9px 0" id="negocTotalCotado">R$ 0,00</div>
+      </div>
+      <div class="negoc-grupo">
+        <label>% de desconto global</label>
+        <input type="number" id="negocInputPct" placeholder="Ex: 5" min="0" max="99" step="0.01" oninput="onPctInput()" />
+      </div>
+      <div class="negoc-grupo">
+        <label>— ou — Valor global desejado (R$)</label>
+        <input type="number" id="negocInputGlobal" placeholder="Ex: 3900,00" min="0" step="0.01" oninput="onGlobalInput()" />
+      </div>
+      <div class="negoc-grupo" style="display:flex;align-items:flex-end">
+        <button class="negoc-apply-btn" onclick="aplicarDesconto()">
+          <i class="fas fa-magic"></i> Aplicar rateio
+        </button>
+      </div>
+      <div class="negoc-calc" id="negocDescCalc"></div>
+    </div>
+
+    <!-- Tabela de itens editáveis -->
+    <div class="negoc-table-wrap">
+      <table class="negoc-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Item</th>
+            <th style="text-align:right">Cotado</th>
+            <th style="text-align:center">Negociado (unit.)</th>
+            <th style="text-align:right">Total negociado</th>
+          </tr>
+        </thead>
+        <tbody id="negocItensBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Totais -->
+    <div class="negoc-footer-totals">
+      <div>
+        Total negociado: <strong id="negocTotalNegociado">R$ 0,00</strong>
+      </div>
+      <div class="negoc-desc-result" id="negocDescocalc"></div>
+    </div>
+
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn-cancel" style="color:#ef4444;border-color:#ef4444" onclick="limparNegociacao()">
+        <i class="fas fa-trash"></i> Remover negociação
+      </button>
+      <div style="display:flex;gap:10px">
+        <button class="btn-cancel" onclick="fecharNegociacao()">Cancelar</button>
+        <button class="btn-primary" onclick="confirmarNegociacao()">
+          <i class="fas fa-check"></i> Confirmar Negociação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pedido Gerado -->
+<div class="modal-overlay hidden" id="modalPedido" onclick="closeModalPedido(event)">
+  <div class="modal-box modal-box--lg">
+    <div class="modal-header">
+      <h2><i class="fas fa-shopping-bag"></i> Pedido de Compra Gerado</h2>
+      <button class="modal-close" onclick="closeModalPedido()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="modalPedidoBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalPedido()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Compartilhar -->
+<div class="modal-overlay hidden" id="modalShare" onclick="closeModalShare(event)">
+  <div class="modal-box modal-share">
+    <div class="modal-header">
+      <h2><i class="fas fa-share-nodes" style="color:#2563eb;margin-right:8px"></i> Compartilhar Mapa</h2>
+      <button class="modal-close" onclick="closeModalShare()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.875rem;color:#64748b;margin-bottom:4px">
+        Copie o link abaixo e envie para o seu cliente. A página é pública — não requer login.
+      </p>
+      <div class="share-link-wrap">
+        <input class="share-link-input" id="shareLinkInput" readonly />
+        <button class="btn-copy-link" onclick="copiarLink()">
+          <i class="fas fa-copy" id="copyIcon"></i> <span id="copyLabel">Copiar</span>
+        </button>
+      </div>
+      <div class="share-hint">
+        <i class="fas fa-lock" style="color:#22c55e"></i>
+        Visualização segura — somente leitura. O link não expira.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalShare()">Fechar</button>
+      <a id="shareOpenLink" href="#" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">
+        <i class="fas fa-external-link-alt"></i> Abrir prévia
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../js/sidebar.js"></script>
+<script src="../js/mapa-cotacao.js"></script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diário de Obras — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/diario.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role" id="sidebarRole">Administrador</span>
+    </div>
+  </div>
+  <!-- nav gerado por sidebar.js -->
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days" id="trialDays">—</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Diário de Obras</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar registros..." id="headerSearch" oninput="filtrarLista(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="trial-badge" id="trialBadge" style="display:none">
+        <i class="fas fa-clock"></i>
+        <span class="trial-badge-days" id="trialBadgeDays">—</span>
+        <span class="trial-badge-label">de teste</span>
+      </div>
+      <button class="btn-upgrade-sm" id="btnAssinar" style="display:none"><i class="fas fa-rocket"></i> Assinar</button>
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">0</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- Page title -->
+    <div class="page-title">
+      <div>
+        <h1><i class="fas fa-book-open" style="color:var(--primary);margin-right:10px"></i>Diário de Obras</h1>
+        <p>Registre o que aconteceu na obra a cada dia — clima, mão de obra, serviços e anexos</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-primary-dash" onclick="abrirModalNovo()">
+          <i class="fas fa-plus"></i> Novo Registro
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="rdo-stats">
+      <div class="rdo-stat-card">
+        <div class="stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-info"><p>Total de Registros</p><h3 id="statTotal">0</h3></div>
+      </div>
+      <div class="rdo-stat-card">
+        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info"><p>Finalizados</p><h3 id="statFinalizado">0</h3></div>
+      </div>
+      <div class="rdo-stat-card">
+        <div class="stat-icon orange"><i class="fas fa-pen"></i></div>
+        <div class="stat-info"><p>Rascunhos</p><h3 id="statRascunho">0</h3></div>
+      </div>
+      <div class="rdo-stat-card">
+        <div class="stat-icon gray"><i class="fas fa-paperclip"></i></div>
+        <div class="stat-info"><p>Anexos enviados</p><h3 id="statAnexos">0</h3></div>
+      </div>
+    </div>
+
+    <!-- Toolbar / Filtros -->
+    <div class="rdo-toolbar">
+      <select id="filtroObra">
+        <option value="">Todas as obras</option>
+      </select>
+      <input type="month" id="filtroMes" />
+      <div class="view-toggle">
+        <button class="view-btn" id="btnViewCard" title="Visualização em cards" onclick="setView('card')">
+          <i class="fas fa-th-large"></i>
+        </button>
+        <button class="view-btn active" id="btnViewList" title="Visualização em lista" onclick="setView('list')">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de cards / tabela -->
+    <div id="rdoList">
+      <div class="rdo-empty">
+        <i class="fas fa-book-open"></i>
+        <p>Carregando registros...</p>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /main-wrapper -->
+
+<!-- ════════════════════════════════════════════
+     MODAL — CRIAR / EDITAR RDO
+════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modalRdo">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-book-open"></i> <span id="modalRdoTitulo">Novo Registro</span></h3>
+      <button class="modal-close" onclick="fecharModal('modalRdo')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="formRdo" novalidate>
+        <input type="hidden" id="rdoId" />
+
+        <!-- Identificação -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-info-circle"></i> Identificação</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Obra *</label>
+              <select id="rdoObra" required>
+                <option value="">Selecione a obra...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Data *</label>
+              <input type="date" id="rdoData" required />
+            </div>
+            <div class="form-group">
+              <label style="display:flex;align-items:center;justify-content:space-between">
+                Responsável
+                <button type="button" class="btn-gerenciar-funcoes" onclick="abrirModalResponsaveis()">
+                  <i class="fas fa-cog"></i> Gerenciar
+                </button>
+              </label>
+              <select id="rdoResponsavel">
+                <option value="">Selecione o responsável...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cargo / Função</label>
+              <input type="text" id="rdoCargo" placeholder="Ex: Engenheiro, Mestre de Obras" autocomplete="off" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Clima -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-cloud-sun"></i> Condições Climáticas</div>
+          <div class="clima-grid">
+            <div class="form-group">
+              <label>Manhã</label>
+              <div class="clima-options" id="climaManha">
+                <button type="button" class="clima-btn active" data-v="sol">☀️ Sol</button>
+                <button type="button" class="clima-btn" data-v="nublado">⛅ Nublado</button>
+                <button type="button" class="clima-btn" data-v="chuva">🌧️ Chuva</button>
+                <button type="button" class="clima-btn" data-v="garoa">🌦️ Garoa</button>
+                <button type="button" class="clima-btn" data-v="tempestade">⛈️ Temp.</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Tarde</label>
+              <div class="clima-options" id="climaTarde">
+                <button type="button" class="clima-btn active" data-v="sol">☀️ Sol</button>
+                <button type="button" class="clima-btn" data-v="nublado">⛅ Nublado</button>
+                <button type="button" class="clima-btn" data-v="chuva">🌧️ Chuva</button>
+                <button type="button" class="clima-btn" data-v="garoa">🌦️ Garoa</button>
+                <button type="button" class="clima-btn" data-v="tempestade">⛈️ Temp.</button>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="rdoTemperatura" value="" />
+        </div>
+
+        <!-- Etapas em execução -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-project-diagram"></i> Etapas em Execução</div>
+          <p style="font-size:.82rem;color:#64748b;margin:0 0 10px">Marque as etapas que foram trabalhadas hoje nesta obra.</p>
+          <div id="etapasCheckList" class="etapas-check-list">
+            <p style="color:#94a3b8;font-size:.85rem">Selecione uma obra para ver as etapas.</p>
+          </div>
+        </div>
+
+        <!-- Mão de Obra -->
+        <div class="rdo-section">
+          <div class="rdo-section-title">
+            <i class="fas fa-hard-hat"></i> Mão de Obra no Dia
+            <button type="button" class="btn-gerenciar-funcoes" onclick="abrirModalFuncoes()" title="Gerenciar funções cadastradas">
+              <i class="fas fa-cog"></i> Gerenciar funções
+            </button>
+          </div>
+          <div class="mo-list" id="moList"></div>
+          <button type="button" class="btn-add-mo" onclick="addMoRow()">
+            <i class="fas fa-plus"></i> Adicionar função
+          </button>
+        </div>
+
+        <!-- Serviços -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-tools"></i> Serviços Executados</div>
+          <div class="form-group">
+            <textarea id="rdoServicos" rows="4" placeholder="Descreva os serviços realizados hoje: concretagem, alvenaria, instalações, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- Ocorrências -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-exclamation-triangle"></i> Ocorrências e Observações</div>
+          <div class="form-group">
+            <textarea id="rdoOcorrencias" rows="3" placeholder="Problemas, paralisações, acidentes, visitas, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- Anexos -->
+        <div class="rdo-section">
+          <div class="rdo-section-title"><i class="fas fa-paperclip"></i> Fotos, Vídeos e Documentos</div>
+          <div id="anexosExistentes" class="anexos-galeria" style="display:none"></div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="inputAnexos" multiple
+              accept="image/*,video/mp4,video/quicktime,video/avi,.pdf,.doc,.docx,.xls,.xlsx" />
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p><strong>Clique para selecionar</strong> ou arraste os arquivos aqui</p>
+            <small>Fotos, vídeos (até 200MB), PDFs, Word, Excel</small>
+          </div>
+          <div class="anexos-preview" id="novosAnexosPreview"></div>
+        </div>
+
+        <!-- Status -->
+        <div class="form-group" style="margin-top:8px">
+          <label>Status do Registro</label>
+          <select id="rdoStatus">
+            <option value="rascunho">Rascunho — ainda posso editar</option>
+            <option value="finalizado">Finalizado — fechado para o dia</option>
+          </select>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModal('modalRdo')">Cancelar</button>
+      <button class="btn-salvar" id="btnSalvarRdo" onclick="salvarRdo()">
+        <i class="fas fa-save"></i> Salvar Registro
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL — VISUALIZAR RDO
+════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modalVer">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-eye"></i> <span id="verTitulo">Detalhes do Registro</span></h3>
+      <button class="modal-close" onclick="fecharModal('modalVer')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="verBody"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModal('modalVer')">Fechar</button>
+      <button class="btn-primary-dash" onclick="editarDoVer()">
+        <i class="fas fa-edit"></i> Editar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL — GERENCIAR FUNÇÕES
+════════════════════════════════════════════ -->
+<!-- Modal Gerenciar Responsáveis -->
+<div class="modal-overlay hidden" id="modalResponsaveis">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-hard-hat"></i> Responsáveis no Campo</h3>
+      <button class="modal-close" onclick="fecharModal('modalResponsaveis')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;color:#64748b;margin:0 0 14px">
+        Cadastre os responsáveis para selecionar rapidamente ao criar um RDO.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <input type="text" id="inputNovoResponsavel" placeholder="Nome do responsável..."
+          style="padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;outline:none;font-family:inherit"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();salvarResponsavel()}" />
+        <input type="text" id="inputNovoResponsavelCargo" placeholder="Cargo / Função..."
+          style="padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;outline:none;font-family:inherit"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();salvarResponsavel()}" />
+      </div>
+      <button class="btn-salvar" style="width:100%;padding:10px;margin-bottom:16px" onclick="salvarResponsavel()">
+        <i class="fas fa-plus"></i> Adicionar Responsável
+      </button>
+      <div id="responsaveisList" style="display:flex;flex-direction:column;gap:6px">
+        <p style="text-align:center;color:#94a3b8;font-size:.85rem">Nenhum responsável cadastrado ainda.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModal('modalResponsaveis')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Gerenciar Funções -->
+<div class="modal-overlay hidden" id="modalFuncoes">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h3><i class="fas fa-hard-hat"></i> Funções da Equipe</h3>
+      <button class="modal-close" onclick="fecharModal('modalFuncoes')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;color:#64748b;margin:0 0 14px">
+        Cadastre as funções da sua equipe para selecionar rapidamente ao criar um RDO.
+      </p>
+      <!-- Input rápido -->
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <input type="text" id="inputNovaFuncao" placeholder="Ex: Pedreiro, Eletricista, Encarregado..."
+          style="flex:1;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.875rem;outline:none;font-family:inherit"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();salvarFuncao()}" />
+        <button class="btn-salvar" style="padding:10px 16px" onclick="salvarFuncao()">
+          <i class="fas fa-plus"></i> Adicionar
+        </button>
+      </div>
+      <!-- Lista de funções -->
+      <div id="funcoesList" style="display:flex;flex-direction:column;gap:6px">
+        <p style="text-align:center;color:#94a3b8;font-size:.85rem">Carregando...</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="fecharModal('modalFuncoes')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" style="display:none">
+  <button class="lb-close" onclick="fecharLightbox()"><i class="fas fa-times"></i></button>
+  <div id="lbContent"></div>
+  <div class="lb-caption" id="lbCaption"></div>
+</div>
+
+<!-- Toast -->
+<div id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/diario.js"></script>
+</body>
+</html>

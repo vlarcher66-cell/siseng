@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Etapas — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/obras.css" />
+  <link rel="stylesheet" href="../css/etapas.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item">
+      <i class="fas fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i>
+        <span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item">
+          <i class="fas fa-hard-hat"></i><span>Obras</span>
+          <span class="nav-badge" id="obrasCount">0</span>
+        </a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item">
+          <i class="fas fa-truck"></i><span>Fornecedores</span>
+        </a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item">
+          <i class="fas fa-list-check"></i><span>Modelos de Etapa</span>
+        </a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group open" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-project-diagram"></i><span>Planejamento</span>
+          <span class="nav-badge" id="etapasCount">0</span>
+          <div class="nav-active-bar"></div>
+        </a>
+        <a href="medicao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-ruler-combined"></i><span>Medição</span>
+        </a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item">
+          <i class="fas fa-chart-line"></i><span>Análise</span>
+        </a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item">
+      <i class="fas fa-dollar-sign"></i><span>Financeiro</span>
+    </a>
+    <a href="orcamento.html" class="nav-item">
+      <i class="fas fa-file-invoice-dollar"></i><span>Orçamentos</span>
+    </a>
+    <a href="equipe.html" class="nav-item">
+      <i class="fas fa-users"></i><span>Equipe</span>
+    </a>
+    <a href="documentos.html" class="nav-item">
+      <i class="fas fa-folder-open"></i><span>Documentos</span>
+    </a>
+
+    <div class="nav-section-label">Análise</div>
+    <a href="relatorios.html" class="nav-item">
+      <i class="fas fa-chart-bar"></i><span>Relatórios</span>
+    </a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i>
+        <span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item">
+          <i class="fas fa-users-cog"></i><span>Usuários</span>
+        </a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item">
+          <i class="fas fa-sliders-h"></i><span>Empresa</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">12 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Etapas</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar etapas..." id="headerSearch" oninput="searchEtapas(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="perfil.html" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- Page title -->
+    <div class="page-title">
+      <div>
+        <h1><i class="fas fa-tasks" style="color:var(--primary);margin-right:10px"></i>Etapas de Obra</h1>
+        <p id="etapasSubtitle">Carregando...</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-secondary" onclick="openPopupTipos()">
+          <i class="fas fa-list-alt"></i> Tipos de Etapa
+        </button>
+        <button class="btn-primary-dash" onclick="openModalEtapa()">
+          <i class="fas fa-plus"></i> Nova Etapa
+        </button>
+      </div>
+    </div>
+
+    <!-- ── FILTROS ── -->
+    <div class="etapas-filters">
+      <div class="filter-group">
+        <label><i class="fas fa-hard-hat"></i> Obra</label>
+        <select id="filterObra" onchange="applyFilters()">
+          <option value="">Todas as obras</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><i class="fas fa-layer-group"></i> Tipo</label>
+        <select id="filterTipo" onchange="applyFilters()">
+          <option value="">Todos os tipos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><i class="fas fa-flag"></i> Status</label>
+        <select id="filterStatus" onchange="applyFilters()">
+          <option value="">Todos</option>
+          <option value="pendente">Pendente</option>
+          <option value="em_andamento">Em Andamento</option>
+          <option value="concluida">Concluída</option>
+          <option value="atrasada">Atrasada</option>
+          <option value="bloqueada">Bloqueada</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── STATUS TABS ── -->
+    <div class="status-tabs-wrap">
+      <button class="etapa-tab active" data-status="todos" onclick="setTabFilter('todos', this)">
+        <i class="fas fa-th-large"></i> Todas
+        <span class="etapa-tab-count" id="ecnt-todos">0</span>
+      </button>
+      <button class="etapa-tab etapa-tab-andamento" data-status="em_andamento" onclick="setTabFilter('em_andamento', this)">
+        <i class="fas fa-play-circle"></i> Em Andamento
+        <span class="etapa-tab-count" id="ecnt-em_andamento">0</span>
+      </button>
+      <button class="etapa-tab etapa-tab-pendente" data-status="pendente" onclick="setTabFilter('pendente', this)">
+        <i class="fas fa-clock"></i> Pendente
+        <span class="etapa-tab-count" id="ecnt-pendente">0</span>
+      </button>
+      <button class="etapa-tab etapa-tab-concluida" data-status="concluida" onclick="setTabFilter('concluida', this)">
+        <i class="fas fa-check-circle"></i> Concluída
+        <span class="etapa-tab-count" id="ecnt-concluida">0</span>
+      </button>
+      <button class="etapa-tab etapa-tab-atrasada" data-status="atrasada" onclick="setTabFilter('atrasada', this)">
+        <i class="fas fa-exclamation-triangle"></i> Atrasada
+        <span class="etapa-tab-count" id="ecnt-atrasada">0</span>
+      </button>
+      <button class="etapa-tab etapa-tab-bloqueada" data-status="bloqueada" onclick="setTabFilter('bloqueada', this)">
+        <i class="fas fa-ban"></i> Bloqueada
+        <span class="etapa-tab-count" id="ecnt-bloqueada">0</span>
+      </button>
+    </div>
+
+    <!-- ── TOOLBAR ── -->
+    <div class="etapas-toolbar">
+      <div class="toolbar-left">
+        <div class="view-toggle">
+          <button class="view-btn" id="btnGrid" onclick="setView('grid')" title="Cards">
+            <i class="fas fa-th-large"></i>
+          </button>
+          <button class="view-btn active" id="btnList" onclick="setView('list')" title="Lista">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+        <span class="obras-result-count" id="resultCount">Carregando...</span>
+      </div>
+      <div class="toolbar-right">
+        <select class="toolbar-select" id="sortSelect" onchange="sortEtapas(this.value)">
+          <option value="nome">Ordenar: Nome A-Z</option>
+          <option value="prazo">Mais urgente</option>
+          <option value="pct_desc">Maior progresso</option>
+          <option value="obra">Por Obra</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── ETAPAS GRID ── -->
+    <div class="etapas-container" id="etapasContainer"></div>
+
+    <!-- Empty state -->
+    <div class="empty-state hidden" id="emptyState">
+      <i class="fas fa-tasks"></i>
+      <h3>Nenhuma etapa encontrada</h3>
+      <p>Tente outro filtro ou cadastre uma nova etapa.</p>
+      <button class="btn-primary-dash" onclick="openModalEtapa()">
+        <i class="fas fa-plus"></i> Cadastrar Etapa
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: CRIAR / EDITAR ETAPA
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalEtapa">
+  <div class="dash-modal modal-etapa-size">
+    <div class="dash-modal-header">
+      <h3 id="modalEtapaTitle"><i class="fas fa-tasks"></i> Nova Etapa</h3>
+      <button onclick="closeModalEtapa()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body">
+
+      <!-- Identificação -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-info-circle"></i> Identificação</div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Tipo de Etapa *</label>
+            <div class="input-with-btn">
+              <select id="etapaTipo">
+                <option value="">Selecione...</option>
+              </select>
+              <button type="button" class="btn-add-inline" onclick="openPopupTipos()" title="Gerenciar tipos de etapa">
+                <i class="fas fa-list-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Obra Vinculada *</label>
+            <select id="etapaObra">
+              <option value="">Selecione a obra...</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group" style="display:none"><select id="etapaNome"></select></div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="etapaStatus">
+              <option value="pendente">Pendente</option>
+              <option value="em_andamento">Em Andamento</option>
+              <option value="concluida">Concluída</option>
+              <option value="atrasada">Atrasada</option>
+              <option value="bloqueada">Bloqueada</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Responsável</label>
+            <input type="text" id="etapaResponsavel" placeholder="Nome do responsável" />
+          </div>
+          <div class="form-group">
+            <label>% Execução</label>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="range" id="etapaPercentual" min="0" max="100" step="1" value="0"
+                oninput="document.getElementById('etapaPercentualVal').textContent = this.value + '%'"
+                style="flex:1;accent-color:#2563eb" />
+              <span id="etapaPercentualVal" style="font-size:.85rem;font-weight:700;color:#2563eb;min-width:36px">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datas e Planejamento -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-calendar-alt"></i> Datas e Planejamento</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Data de Início</label>
+            <input type="date" id="etapaInicio" />
+          </div>
+          <div class="form-group">
+            <label>Previsão de Término</label>
+            <input type="date" id="etapaPrazo" />
+          </div>
+          <div class="form-group">
+            <label>Custo da Etapa (R$)</label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">R$</span>
+              <input type="text" id="etapaCustoPrevisto" placeholder="0,00" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Observações -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-sticky-note"></i> Observações</div>
+        <div class="form-group">
+          <textarea id="etapaDescricao" rows="3" placeholder="Descrição, observações ou instruções para esta etapa..."></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalEtapa()">Cancelar</button>
+      <button class="btn-primary-dash" onclick="saveEtapa()" id="btnSaveEtapa">
+        <i class="fas fa-save"></i> Salvar Etapa
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: VISUALIZAR ETAPA
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalView">
+  <div class="dash-modal modal-view-etapa">
+    <div class="dash-modal-header">
+      <h3 id="viewEtapaTitle"><i class="fas fa-tasks"></i> Detalhes da Etapa</h3>
+      <button onclick="closeModalView()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-view-body" id="viewBody"></div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalView()">Fechar</button>
+      <button class="btn-secondary" onclick="editFromView()">
+        <i class="fas fa-edit"></i> Editar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: CONFIRMAR EXCLUSÃO
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="modalDelete">
+  <div class="dash-modal modal-sm">
+    <div class="dash-modal-header">
+      <h3 style="color:var(--error)"><i class="fas fa-trash-alt"></i> Excluir Etapa</h3>
+      <button onclick="closeModalDelete()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body" style="text-align:center;padding:32px 28px">
+      <div class="delete-icon-wrap"><i class="fas fa-exclamation-triangle"></i></div>
+      <h4 id="deleteEtapaName" style="font-size:1.05rem;color:var(--dark);margin:16px 0 8px;font-weight:800"></h4>
+      <p style="font-size:.9rem;color:var(--gray);line-height:1.6">
+        Esta ação é irreversível. A etapa e todos os dados vinculados serão excluídos permanentemente.
+      </p>
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closeModalDelete()">Cancelar</button>
+      <button class="btn-delete" onclick="confirmDelete()" id="btnConfirmDelete">
+        <i class="fas fa-trash-alt"></i> Sim, excluir
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     POPUP: TIPOS DE ETAPAS DE EXECUÇÃO
+═══════════════════════════════════════════════════════ -->
+<div class="dash-modal-overlay hidden" id="popupTipos">
+  <div class="dash-modal modal-tipos-size">
+    <div class="dash-modal-header">
+      <h3><i class="fas fa-layer-group"></i> Tipos de Etapas de Execução</h3>
+      <button onclick="closePopupTipos()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dash-modal-body" style="padding:24px">
+
+      <p style="font-size:.85rem;color:var(--gray);margin-bottom:20px;line-height:1.6">
+        Defina os tipos de etapas utilizados nos projetos. Eles ficarão disponíveis para seleção no cadastro de etapas.
+      </p>
+
+      <!-- Adicionar novo tipo -->
+      <div class="tipo-add-row">
+        <div class="form-group" style="flex:1">
+          <label>Nome do Tipo *</label>
+          <input type="text" id="newTipoNome" placeholder="Ex: Fundação, Estrutura, Cobertura..." />
+        </div>
+        <div class="form-group tipo-icon-group">
+          <label>Ícone</label>
+          <select id="newTipoIcone">
+            <option value="fa-layer-group">📋 Genérico</option>
+            <option value="fa-mountain">⛰️ Terraplanagem</option>
+            <option value="fa-cube">🧱 Fundação</option>
+            <option value="fa-building">🏗️ Estrutura</option>
+            <option value="fa-border-all">🧱 Alvenaria</option>
+            <option value="fa-home">🏠 Cobertura</option>
+            <option value="fa-bolt">⚡ Elétrica</option>
+            <option value="fa-tint">💧 Hidráulica</option>
+            <option value="fa-fire">🔥 Gás</option>
+            <option value="fa-th-large">🪟 Revestimento</option>
+            <option value="fa-door-open">🚪 Esquadrias</option>
+            <option value="fa-paint-roller">🎨 Pintura</option>
+            <option value="fa-star">✨ Acabamentos</option>
+            <option value="fa-leaf">🌿 Paisagismo</option>
+            <option value="fa-broom">🧹 Limpeza Final</option>
+            <option value="fa-tools">🔧 Instalações</option>
+            <option value="fa-road">🛣️ Pavimentação</option>
+          </select>
+        </div>
+        <div class="form-group tipo-color-group">
+          <label>Cor</label>
+          <div class="color-pick-row" id="colorPickRow">
+            <button class="color-dot active" data-color="#2563eb" style="background:#2563eb" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#8b5cf6" style="background:#8b5cf6" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#0ea5e9" style="background:#0ea5e9" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#22c55e" style="background:#22c55e" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#f59e0b" style="background:#f59e0b" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#f97316" style="background:#f97316" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#ef4444" style="background:#ef4444" onclick="selectColor(this)"></button>
+            <button class="color-dot" data-color="#64748b" style="background:#64748b" onclick="selectColor(this)"></button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-add-tipo" onclick="saveTipo()">
+        <i class="fas fa-plus"></i> Adicionar Tipo
+      </button>
+
+      <!-- Lista de tipos cadastrados -->
+      <div class="tipos-list-header">
+        <span>Tipos cadastrados</span>
+        <span id="tiposCount" class="tipos-count-badge">0</span>
+      </div>
+      <div id="listTipos" class="tipos-list"></div>
+
+    </div>
+    <div class="dash-modal-footer">
+      <button class="btn-cancel" onclick="closePopupTipos()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/etapas.js"></script>
+</body>
+</html>

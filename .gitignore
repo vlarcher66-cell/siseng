@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+backend/node_modules/
+
+# Variáveis de ambiente — NUNCA subir para o Git
+.env
+backend/.env
+backend/.env.production
+*.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build
+dist/
+build/

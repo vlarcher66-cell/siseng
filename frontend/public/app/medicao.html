@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medição — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/medicao.css" />
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-hard-hat"></i>
+      <span>SIS<strong>ENG</strong></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info">
+      <span class="user-name" id="sidebarName">Admin Demo</span>
+      <span class="user-role">Administrador</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html" class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html" class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html" class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group open" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html" class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html" class="nav-item nav-sub-item active">
+          <i class="fas fa-ruler-combined"></i><span>Medição</span>
+          <div class="nav-active-bar"></div>
+        </a>
+        <a href="analise-cronograma.html" class="nav-item nav-sub-item"><i class="fas fa-chart-line"></i><span>Análise</span></a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-file-invoice"></i><span>Cotações</span>
+        </a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item">
+          <i class="fas fa-table"></i><span>Mapa de Cotação</span>
+        </a>
+      </div>
+    </div>
+    <a href="financeiro.html" class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html" class="nav-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html" class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+
+    <div class="nav-section-label">Sistema</div>
+    <div class="nav-group" id="navGroupConfig">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupConfig')">
+        <i class="fas fa-cog"></i><span>Configurações</span>
+        <i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="usuarios.html" class="nav-item nav-sub-item"><i class="fas fa-users-cog"></i><span>Usuários</span></a>
+        <a href="configuracoes.html" class="nav-item nav-sub-item"><i class="fas fa-sliders-h"></i><span>Empresa</span></a>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days">12 dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-link">Cronograma</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Medição</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar medições..." id="headerSearch" oninput="filterMedicoes(this.value)" />
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i><span class="header-badge">3</span></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa Demo</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+    </div>
+    <div class="user-dropdown hidden" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dh-avatar" id="dropAvatar">AD</div>
+        <div><strong id="dropName">Admin Demo</strong><span id="dropEmail">demo@siseng.com.br</span></div>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-user-cog"></i> Meu Perfil</a>
+      <a href="configuracoes.html" class="dropdown-item"><i class="fas fa-building"></i> Configurações</a>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item text-danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="content">
+
+    <!-- PAGE TITLE -->
+    <div class="bm-title-bar">
+      <div class="bm-title-left">
+        <h1><i class="fas fa-ruler-combined"></i> Medição</h1>
+        <p>Registre o avanço físico-financeiro por período</p>
+      </div>
+      <button class="btn-nova-medicao" onclick="openModalNova()">
+        <i class="fas fa-plus"></i> Nova Medição
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="bm-stats">
+      <div class="bm-stat">
+        <i class="fas fa-file-alt"></i>
+        <div>
+          <span class="bm-stat-val" id="statTotalBMs">0</span>
+          <span class="bm-stat-label">Total de BMs</span>
+        </div>
+      </div>
+      <div class="bm-stat">
+        <i class="fas fa-check-circle"></i>
+        <div>
+          <span class="bm-stat-val" id="statAprovados">0</span>
+          <span class="bm-stat-label">BMs Aprovados</span>
+        </div>
+      </div>
+      <div class="bm-stat">
+        <i class="fas fa-dollar-sign"></i>
+        <div>
+          <span class="bm-stat-val" id="statValorTotal">R$ 0</span>
+          <span class="bm-stat-label">Valor Total Medido</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="bm-toolbar">
+      <div class="bm-filters">
+        <div class="filter-group">
+          <i class="fas fa-hard-hat"></i>
+          <select id="filterObra" onchange="applyFilters()">
+            <option value="">Todas as obras</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <i class="fas fa-flag"></i>
+          <select id="filterStatus" onchange="applyFilters()">
+            <option value="">Todos os status</option>
+            <option value="rascunho">Rascunho</option>
+            <option value="aprovado">Aprovado</option>
+            <option value="faturado">Faturado</option>
+          </select>
+        </div>
+      </div>
+      <span class="bm-count" id="bmCount">0 medições</span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="bm-table-wrap">
+      <table class="bm-table">
+        <thead>
+          <tr>
+            <th>Obra</th>
+            <th>Período</th>
+            <th>Etapas Medidas</th>
+            <th>Valor Medido</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="bmTableBody">
+          <!-- preenchido via JS -->
+        </tbody>
+      </table>
+      <div class="bm-empty hidden" id="bmEmpty">
+        <i class="fas fa-ruler-combined"></i>
+        <p>Nenhuma medição registrada ainda</p>
+        <button class="btn-nova-medicao" onclick="openModalNova()"><i class="fas fa-plus"></i> Criar Primeira Medição</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: NOVA MEDIÇÃO
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modalNova" onclick="closeModalNova(event)">
+  <div class="modal-box modal-box--lg" id="modalNovaBox">
+    <div class="modal-header">
+      <h2 id="modalNovaTitle"><i class="fas fa-plus-circle"></i> Nova Medição</h2>
+      <button class="modal-close" onclick="closeModalNova()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="medicaoId" />
+
+      <!-- Cabeçalho do BM -->
+      <div class="bm-form-section">
+        <div class="bm-form-section-title"><i class="fas fa-info-circle"></i> Identificação do Boletim</div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label><i class="fas fa-hard-hat"></i> Obra Vinculada *</label>
+            <select id="fObra" onchange="onObraChange(this.value)">
+              <option value="">Selecione a obra...</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label><i class="fas fa-calendar-alt"></i> Data da Medição *</label>
+            <input type="date" id="fPeriodo" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de etapas -->
+      <div class="bm-form-section" id="etapasSection">
+        <div class="bm-form-section-title">
+          <i class="fas fa-list-check"></i> Etapas da Obra
+          <span class="section-hint" id="etapasSectionHint">Selecione uma obra para carregar as etapas</span>
+        </div>
+        <div class="bm-itens-wrap" id="bmItensWrap">
+          <div class="bm-itens-placeholder" id="bmItensPlaceholder">
+            <i class="fas fa-hard-hat"></i>
+            <p>Selecione uma obra para visualizar e medir suas etapas</p>
+          </div>
+          <table class="bm-itens-table hidden" id="bmItensTable">
+            <thead>
+              <tr>
+                <th>Etapa</th>
+                <th class="th-num">% Acumulado</th>
+                <th class="th-num">% Executado neste período</th>
+                <th class="th-num">Custo Previsto</th>
+                <th class="th-num">Custo Real</th>
+              </tr>
+            </thead>
+            <tbody id="bmItensBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Observações -->
+      <div class="bm-form-section">
+        <div class="bm-form-section-title"><i class="fas fa-sticky-note"></i> Observações Gerais</div>
+        <div class="form-group">
+          <textarea id="fObservacoes" rows="3" placeholder="Registre observações relevantes sobre este período de medição..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalNova()">Cancelar</button>
+      <button class="btn-rascunho" id="btnRascunho" onclick="saveMedicao('rascunho')">
+        <i class="fas fa-save"></i> Salvar Rascunho
+      </button>
+      <button class="btn-save" id="btnAprovar" onclick="saveMedicao('aprovado')">
+        <i class="fas fa-check-circle"></i> Aprovar e Salvar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: VISUALIZAR BOLETIM DE MEDIÇÃO (BM)
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modalBM" onclick="closeModalBM(event)">
+  <div class="modal-box modal-box--lg" id="modalBMBox">
+    <div class="modal-header">
+      <h2><i class="fas fa-file-invoice"></i> Boletim de Medição</h2>
+      <button class="modal-close" onclick="closeModalBM()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="bmViewBody">
+      <!-- preenchido via JS -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModalBM()">Fechar</button>
+      <button class="btn-print" onclick="printBM()">
+        <i class="fas fa-print"></i> Imprimir BM
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: CONFIRMAR EXCLUSÃO
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="deleteOverlay" onclick="closeDelete(event)">
+  <div class="modal-box modal-box--sm" id="deleteBox">
+    <div class="modal-header modal-header--danger">
+      <h2><i class="fas fa-trash-alt"></i> Excluir Medição</h2>
+      <button class="modal-close" onclick="closeDelete()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p>Tem certeza que deseja excluir o boletim de medição <strong id="deleteNome"></strong>?</p>
+      <p class="delete-warn"><i class="fas fa-exclamation-triangle"></i> Esta ação não poderá ser desfeita. O histórico de medição deste período será perdido permanentemente.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDelete()">Cancelar</button>
+      <button class="btn-delete" onclick="confirmDelete()"><i class="fas fa-trash-alt"></i> Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+<script src="../js/medicao.js"></script>
+</body>
+</html>

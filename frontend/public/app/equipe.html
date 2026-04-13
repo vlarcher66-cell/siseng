@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equipe — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <style>
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+    .page-header h1 { font-size:1.5rem; font-weight:800; color:#0f172a; margin:0; }
+    .page-header p  { font-size:.85rem; color:#64748b; margin:2px 0 0; }
+
+    .btn-primary   { background:#2563eb; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:.875rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .2s; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-secondary { background:#f1f5f9; color:#334155; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 18px; font-size:.875rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .2s; }
+    .btn-secondary:hover { background:#e2e8f0; }
+    .btn-cancel    { background:#f1f5f9; color:#64748b; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 20px; font-size:.875rem; font-weight:600; cursor:pointer; }
+
+    /* Stats */
+    .stats-bar { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+    .stat-card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,.08); padding:20px 24px; display:flex; align-items:center; gap:16px; }
+    .stat-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .stat-icon.blue   { background:#e0e7ff; color:#3730a3; }
+    .stat-icon.green  { background:#dcfce7; color:#16a34a; }
+    .stat-icon.orange { background:#ffedd5; color:#ea580c; }
+    .stat-value { font-size:1.6rem; font-weight:800; color:#0f172a; line-height:1; }
+    .stat-label { font-size:.78rem; color:#64748b; font-weight:500; margin-top:3px; }
+
+    /* Card */
+    .card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,.08); overflow:hidden; }
+    .card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #f1f5f9; gap:12px; flex-wrap:wrap; }
+    .card-title  { font-weight:700; color:#0f172a; font-size:.95rem; display:flex; align-items:center; gap:8px; }
+    .card-title i { color:#2563eb; }
+
+    /* Table */
+    .table-wrap { overflow-x:auto; }
+    .data-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    .data-table th { background:#f8fafc; color:#64748b; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:12px 16px; text-align:left; border-bottom:1px solid #e2e8f0; white-space:nowrap; }
+    .data-table td { padding:14px 16px; border-bottom:1px solid #f1f5f9; color:#334155; vertical-align:middle; }
+    .data-table tbody tr:hover { background:#f8fafc; }
+    .td-ctr { text-align:center; }
+
+    /* User avatar in table */
+    .user-chip { display:flex; align-items:center; gap:10px; }
+    .user-chip-avatar { width:34px; height:34px; border-radius:50%; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800; flex-shrink:0; }
+    .user-chip-name { font-weight:700; color:#0f172a; font-size:.85rem; }
+    .user-chip-email { font-size:.75rem; color:#94a3b8; }
+
+    /* Badges */
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:50px; font-size:.72rem; font-weight:700; white-space:nowrap; }
+    .badge-admin      { background:#e0e7ff; color:#3730a3; }
+    .badge-gerente    { background:#dbeafe; color:#1d4ed8; }
+    .badge-financeiro { background:#d1fae5; color:#065f46; }
+    .badge-operacional{ background:#fef3c7; color:#92400e; }
+    .badge-ativo      { background:#dcfce7; color:#15803d; }
+    .badge-inativo    { background:#fee2e2; color:#dc2626; }
+
+    /* Row actions */
+    .row-actions { display:flex; gap:6px; justify-content:center; }
+    .btn-action { width:32px; height:32px; border:1.5px solid #e2e8f0; background:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748b; font-size:.8rem; transition:all .2s; }
+    .btn-action:hover { background:#2563eb; color:#fff; border-color:#2563eb; }
+    .btn-action.danger:hover { background:#ef4444; border-color:#ef4444; }
+
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.5); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.hidden { display:none; }
+    .modal-box { background:#fff; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,.2); width:100%; max-width:480px; overflow:hidden; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #e2e8f0; }
+    .modal-header h2 { font-size:1rem; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px; }
+    .modal-close { background:none; border:none; font-size:1.1rem; color:#94a3b8; cursor:pointer; padding:4px; }
+    .modal-body { padding:24px; }
+    .modal-footer { display:flex; gap:12px; justify-content:flex-end; padding:16px 24px; border-top:1px solid #e2e8f0; }
+
+    /* Form */
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:.8rem; font-weight:700; color:#334155; margin-bottom:6px; }
+    .form-group input, .form-group select { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:.875rem; color:#0f172a; outline:none; transition:border .2s; box-sizing:border-box; font-family:inherit; }
+    .form-group input:focus, .form-group select:focus { border-color:#2563eb; }
+    .form-hint { font-size:.75rem; color:#94a3b8; margin-top:4px; }
+
+    /* Toast */
+    #toastContainer { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+    .toast { display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:10px; font-size:.875rem; font-weight:600; box-shadow:0 4px 20px rgba(0,0,0,.15); animation:slideIn .3s ease; }
+    .toast.success { background:#fff; border-left:4px solid #22c55e; color:#15803d; }
+    .toast.error   { background:#fff; border-left:4px solid #ef4444; color:#dc2626; }
+    @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+    /* Alert admin only */
+    .alert-admin { background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:12px 16px; font-size:.82rem; color:#1d4ed8; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+
+    @media(max-width:640px) {
+      .stats-bar { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo"><i class="fas fa-hard-hat"></i><span>SIS<strong>ENG</strong></span></div>
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">AD</div>
+    <div class="user-info"><span class="user-name" id="sidebarName">Admin Demo</span><span class="user-role">Administrador</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+    <div class="nav-section-label">Cadastros</div>
+    <div class="nav-group" id="navGroupCadastros">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCadastros')">
+        <i class="fas fa-database"></i><span>Cadastros</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="obras.html"          class="nav-item nav-sub-item"><i class="fas fa-hard-hat"></i><span>Obras</span></a>
+        <a href="fornecedores.html"   class="nav-item nav-sub-item"><i class="fas fa-truck"></i><span>Fornecedores</span></a>
+        <a href="modelos-etapa.html"  class="nav-item nav-sub-item"><i class="fas fa-list-check"></i><span>Modelos de Etapa</span></a>
+        <a href="grupos-item.html"    class="nav-item nav-sub-item"><i class="fas fa-layer-group"></i><span>Grupo</span></a>
+        <a href="subgrupos-item.html" class="nav-item nav-sub-item"><i class="fas fa-sitemap"></i><span>Subgrupo</span></a>
+        <a href="itens-compra.html"   class="nav-item nav-sub-item"><i class="fas fa-box"></i><span>Item</span></a>
+      </div>
+    </div>
+    <div class="nav-section-label">Operacional</div>
+    <div class="nav-group" id="navGroupCronograma">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCronograma')">
+        <i class="fas fa-calendar-alt"></i><span>Cronograma</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="etapas.html"               class="nav-item nav-sub-item"><i class="fas fa-project-diagram"></i><span>Planejamento</span></a>
+        <a href="medicao.html"              class="nav-item nav-sub-item"><i class="fas fa-ruler-combined"></i><span>Medição</span></a>
+        <a href="analise-cronograma.html"   class="nav-item nav-sub-item"><i class="fas fa-chart-line"></i><span>Análise</span></a>
+      </div>
+    </div>
+    <div class="nav-group" id="navGroupCompras">
+      <div class="nav-item nav-group-trigger" onclick="toggleNavGroup('navGroupCompras')">
+        <i class="fas fa-shopping-cart"></i><span>Compras</span><i class="fas fa-chevron-down nav-group-arrow"></i>
+      </div>
+      <div class="nav-submenu">
+        <a href="cotacao.html"      class="nav-item nav-sub-item"><i class="fas fa-file-invoice"></i><span>Cotações</span></a>
+        <a href="mapa-cotacao.html" class="nav-item nav-sub-item"><i class="fas fa-table"></i><span>Mapa de Cotação</span></a>
+      </div>
+    </div>
+    <a href="financeiro.html"  class="nav-item"><i class="fas fa-dollar-sign"></i><span>Financeiro</span></a>
+    <a href="equipe.html"      class="nav-item active"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="documentos.html"  class="nav-item"><i class="fas fa-folder-open"></i><span>Documentos</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="trial-info">
+      <i class="fas fa-clock"></i>
+      <div><span class="trial-days" id="trialDays">-- dias</span><span class="trial-label">restantes no trial</span></div>
+    </div>
+    <button class="btn-upgrade"><i class="fas fa-rocket"></i> Assinar Plano</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- MAIN -->
+<div class="main-wrapper" id="mainWrapper">
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="breadcrumb">
+        <a href="dashboard.html" class="bc-home"><i class="fas fa-home"></i></a>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">Equipe</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i></button>
+      <div class="header-divider"></div>
+      <div class="header-user" onclick="toggleUserMenu()">
+        <div class="header-avatar" id="headerAvatar">AD</div>
+        <div class="header-user-info">
+          <span id="headerName">Admin Demo</span>
+          <span id="headerCompany">Empresa</span>
+        </div>
+        <i class="fas fa-chevron-down header-chevron"></i>
+      </div>
+      <div class="user-dropdown hidden" id="userDropdown">
+        <a href="#" class="dropdown-item"><i class="fas fa-user"></i> Meu Perfil</a>
+        <a href="#" class="dropdown-item"><i class="fas fa-cog"></i> Configurações</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1><i class="fas fa-users" style="color:#2563eb;margin-right:10px"></i>Equipe</h1>
+        <p>Gerencie os usuários com acesso ao sistema</p>
+      </div>
+      <button class="btn-primary" id="btnNovoUsuario" onclick="openModal()" style="display:none">
+        <i class="fas fa-plus"></i> Novo Usuário
+      </button>
+    </div>
+
+    <div id="alertAdmin" class="alert-admin" style="display:none">
+      <i class="fas fa-info-circle"></i>
+      Apenas administradores podem gerenciar usuários.
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+        <div><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-user-check"></i></div>
+        <div><div class="stat-value" id="statAtivos">0</div><div class="stat-label">Ativos</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange"><i class="fas fa-user-shield"></i></div>
+        <div><div class="stat-value" id="statAdmins">0</div><div class="stat-label">Admins</div></div>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fas fa-list"></i> Usuários</div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Perfil</th>
+              <th>Status</th>
+              <th>Último acesso</th>
+              <th class="td-ctr" id="thAcoes" style="display:none">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="5" style="text-align:center;padding:32px;color:#94a3b8"><i class="fas fa-circle-notch fa-spin"></i> Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL NOVO/EDITAR USUÁRIO -->
+<div class="modal-overlay hidden" id="modalUsuario" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-user-plus" style="color:#2563eb"></i> <span id="modalTitle">Novo Usuário</span></h2>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome completo *</label>
+        <input type="text" id="fNome" placeholder="Ex: João da Silva" />
+      </div>
+      <div class="form-group">
+        <label>E-mail *</label>
+        <input type="email" id="fEmail" placeholder="joao@empresa.com" />
+        <div class="form-hint" id="fEmailHint">O usuário receberá as credenciais por e-mail.</div>
+      </div>
+      <div class="form-group">
+        <label>Perfil de acesso *</label>
+        <select id="fPerfil">
+          <option value="">Selecione...</option>
+          <option value="admin">Administrador — acesso total</option>
+          <option value="gerente">Gerente — acesso operacional completo</option>
+          <option value="financeiro">Financeiro — compras e financeiro</option>
+          <option value="operacional">Operacional — somente leitura de obras</option>
+        </select>
+      </div>
+      <div class="form-group" id="fSenhaGroup">
+        <label>Senha (opcional)</label>
+        <input type="password" id="fSenha" placeholder="Deixe em branco para gerar automaticamente" />
+        <div class="form-hint">Mínimo 8 caracteres. Se em branco, uma senha será gerada e enviada por e-mail.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="salvar()"><i class="fas fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toastContainer"></div>
+
+<script src="../js/sidebar.js"></script>
+  <script src="../js/dashboard.js"></script>
+<script>
+const API = '/api/usuarios';
+let usuarios = [];
+let editingId = null;
+let isAdmin = false;
+
+function getToken() {
+  return localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
+}
+
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${getToken()}` } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const res  = await fetch(`${API}${path}`, opts);
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) { localStorage.removeItem('sis_token'); window.location.href='../index.html'; throw new Error('Não autorizado'); }
+  if (!res.ok) throw new Error(data.message || `Erro ${res.status}`);
+  return data;
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function perfilBadge(p) {
+  const map = { admin:'badge-admin', gerente:'badge-gerente', financeiro:'badge-financeiro', operacional:'badge-operacional' };
+  const label = { admin:'Admin', gerente:'Gerente', financeiro:'Financeiro', operacional:'Operacional' };
+  return `<span class="badge ${map[p]||''}">${label[p]||p}</span>`;
+}
+
+function iniciais(nome) {
+  return (nome||'?').split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+}
+
+async function carregar() {
+  try {
+    usuarios = await api('GET', '');
+    render();
+    updateStats();
+  } catch(e) {
+    document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:#ef4444">${e.message}</td></tr>`;
+  }
+}
+
+function render() {
+  const tbody = document.getElementById('tableBody');
+  if (!usuarios.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:#94a3b8">Nenhum usuário encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = usuarios.map(u => `
+    <tr>
+      <td>
+        <div class="user-chip">
+          <div class="user-chip-avatar" style="background:${avatarColor(u.nome)}">${iniciais(u.nome)}</div>
+          <div>
+            <div class="user-chip-name">${u.nome}</div>
+            <div class="user-chip-email">${u.email}</div>
+          </div>
+        </div>
+      </td>
+      <td>${perfilBadge(u.perfil)}</td>
+      <td><span class="badge ${u.ativo ? 'badge-ativo':'badge-inativo'}">${u.ativo?'Ativo':'Inativo'}</span></td>
+      <td style="font-size:.8rem;color:#64748b">${formatDate(u.ultimo_acesso)}</td>
+      ${isAdmin ? `<td class="td-ctr">
+        <div class="row-actions">
+          <button class="btn-action" title="Editar" onclick="openModal(${u.id})"><i class="fas fa-pen"></i></button>
+          <button class="btn-action" title="Resetar senha" onclick="resetarSenha(${u.id},'${u.nome}')"><i class="fas fa-key"></i></button>
+          <button class="btn-action danger" title="${u.ativo?'Desativar':'Ativar'}" onclick="toggleAtivo(${u.id},${u.ativo})">
+            <i class="fas fa-${u.ativo?'ban':'check'}"></i>
+          </button>
+        </div>
+      </td>` : '<td></td>'}
+    </tr>`).join('');
+}
+
+function avatarColor(nome) {
+  const colors = ['#2563eb','#7c3aed','#db2777','#059669','#d97706','#dc2626'];
+  let hash = 0;
+  for (const c of (nome||'')) hash += c.charCodeAt(0);
+  return colors[hash % colors.length];
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent  = usuarios.length;
+  document.getElementById('statAtivos').textContent = usuarios.filter(u=>u.ativo).length;
+  document.getElementById('statAdmins').textContent = usuarios.filter(u=>u.perfil==='admin').length;
+}
+
+function openModal(id) {
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Editar Usuário' : 'Novo Usuário';
+  document.getElementById('fSenhaGroup').style.display = id ? 'none' : 'block';
+  document.getElementById('fEmailHint').style.display  = id ? 'none' : 'block';
+
+  if (id) {
+    const u = usuarios.find(x => x.id === id);
+    document.getElementById('fNome').value   = u?.nome || '';
+    document.getElementById('fEmail').value  = u?.email || '';
+    document.getElementById('fPerfil').value = u?.perfil || '';
+    document.getElementById('fEmail').disabled = true;
+  } else {
+    document.getElementById('fNome').value  = '';
+    document.getElementById('fEmail').value = '';
+    document.getElementById('fSenha').value = '';
+    document.getElementById('fPerfil').value = '';
+    document.getElementById('fEmail').disabled = false;
+  }
+  document.getElementById('modalUsuario').classList.remove('hidden');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalUsuario')) return;
+  document.getElementById('modalUsuario').classList.add('hidden');
+  editingId = null;
+}
+
+async function salvar() {
+  const nome   = document.getElementById('fNome').value.trim();
+  const email  = document.getElementById('fEmail').value.trim();
+  const perfil = document.getElementById('fPerfil').value;
+  const senha  = document.getElementById('fSenha').value;
+
+  if (!nome || !perfil) return showToast('Preencha nome e perfil.', 'error');
+  if (!editingId && !email) return showToast('Informe o e-mail.', 'error');
+
+  try {
+    if (editingId) {
+      await api('PUT', `/${editingId}`, { nome, perfil });
+      showToast('Usuário atualizado!');
+    } else {
+      await api('POST', '', { nome, email, perfil, password: senha || undefined });
+      showToast('Usuário criado! Credenciais enviadas por e-mail.');
+    }
+    closeModal();
+    carregar();
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+async function resetarSenha(id, nome) {
+  if (!confirm(`Resetar a senha de ${nome}? Uma nova senha será gerada e enviada por e-mail.`)) return;
+  try {
+    const data = await api('POST', `/${id}/resetar`, {});
+    showToast(`Nova senha: ${data.senha}`);
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+async function toggleAtivo(id, ativo) {
+  try {
+    await api('PUT', `/${id}`, { ativo: !ativo });
+    showToast(ativo ? 'Usuário desativado.' : 'Usuário reativado.');
+    carregar();
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initSidebar();
+  renderSidebar('equipe');
+  loadObrasCount?.();
+
+  const userStr = localStorage.getItem('sis_user') || sessionStorage.getItem('sis_user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  isAdmin = user?.perfil === 'admin';
+
+  if (isAdmin) {
+    document.getElementById('btnNovoUsuario').style.display = 'inline-flex';
+    document.getElementById('thAcoes').style.display = '';
+  } else {
+    document.getElementById('alertAdmin').style.display = 'flex';
+  }
+
+  carregar();
+});
+</script>
+</body>
+</html>

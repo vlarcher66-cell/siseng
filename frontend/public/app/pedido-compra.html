@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pedido de Compra — SISENG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#eef2f7;color:#1e293b;min-height:100vh;}
+
+    /* ── Barra de ações (não imprime) ── */
+    .top-bar{background:#1e3a5f;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .top-bar-logo{display:flex;align-items:center;gap:10px;}
+    .top-bar-logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;}
+    .top-bar-logo span{font-size:1rem;font-weight:900;color:#fff;letter-spacing:-.3px;}
+    .top-bar-logo span b{color:#f97316;}
+    .top-bar-actions{display:flex;gap:8px;}
+    .btn-print{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s;}
+    .btn-print:hover{background:#1d4ed8;}
+    .btn-back{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;}
+    .btn-back:hover{background:rgba(255,255,255,.1);}
+
+    /* ── Container ── */
+    .container{max-width:860px;margin:28px auto;padding:0 16px 60px;}
+
+    /* ── Pedido card ── */
+    .pedido{background:#fff;border-radius:14px;box-shadow:0 4px 32px rgba(0,0,0,.10);overflow:hidden;}
+
+    /* ── Cabeçalho ── */
+    .ped-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:28px 32px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+    .ped-header-empresa h1{font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-.3px;margin-bottom:4px;}
+    .ped-header-empresa p{font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.6;}
+    .ped-header-right{text-align:right;}
+    .ped-numero{font-size:1.5rem;font-weight:900;color:#f97316;letter-spacing:-.5px;}
+    .ped-tipo{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+    .ped-data{font-size:.75rem;color:rgba(255,255,255,.5);margin-top:6px;}
+
+    /* ── Blocos de info ── */
+    .ped-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #f1f5f9;}
+    .ped-info-block{padding:20px 24px;border-right:1px solid #f1f5f9;}
+    .ped-info-block:last-child{border-right:none;}
+    .ped-info-label{font-size:.62rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+    .ped-info-label i{color:#2563eb;}
+    .ped-info-nome{font-size:.95rem;font-weight:800;color:#0f172a;margin-bottom:4px;}
+    .ped-info-detalhe{font-size:.75rem;color:#64748b;line-height:1.6;}
+
+    /* ── Referência ── */
+    .ped-ref{display:flex;gap:0;border-bottom:1px solid #f1f5f9;}
+    .ped-ref-item{flex:1;padding:14px 24px;border-right:1px solid #f1f5f9;}
+    .ped-ref-item:last-child{border-right:none;}
+    .ped-ref-label{font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}
+    .ped-ref-val{font-size:.82rem;font-weight:700;color:#334155;}
+
+    /* ── Tabela de itens ── */
+    .ped-itens{padding:0;}
+    .ped-itens-title{padding:14px 24px;font-size:.8rem;font-weight:700;color:#0f172a;background:#f8fafc;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:6px;}
+    .ped-itens-title i{color:#2563eb;}
+    table{width:100%;border-collapse:collapse;}
+    thead th{padding:10px 16px;text-align:left;font-size:.62rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;border-bottom:2px solid #f1f5f9;background:#f8fafc;white-space:nowrap;}
+    th.r,td.r{text-align:right;}
+    th.c,td.c{text-align:center;}
+    tbody tr{border-bottom:1px solid #f8fafc;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:#fafbff;}
+    tbody td{padding:13px 16px;font-size:.82rem;color:#334155;}
+    .td-desc{font-weight:600;color:#0f172a;}
+    .td-num{font-weight:700;}
+
+    /* ── Total ── */
+    .ped-total{display:flex;justify-content:flex-end;padding:16px 24px;border-top:2px solid #f1f5f9;background:#f8fafc;}
+    .ped-total-box{text-align:right;}
+    .ped-total-label{font-size:.68rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+    .ped-total-val{font-size:1.6rem;font-weight:900;color:#0f172a;}
+    .ped-total-ext{font-size:.72rem;color:#64748b;margin-top:4px;font-style:italic;}
+
+    /* ── Obs / Condições ── */
+    .ped-cond{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #f1f5f9;}
+    .ped-cond-block{padding:18px 24px;border-right:1px solid #f1f5f9;}
+    .ped-cond-block:last-child{border-right:none;}
+    .ped-cond-label{font-size:.62rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+    .ped-cond-val{font-size:.78rem;color:#334155;line-height:1.6;}
+
+    /* ── Assinaturas ── */
+    .ped-sign{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #f1f5f9;padding:28px 32px;background:#fafbff;}
+    .sign-block{text-align:center;}
+    .sign-line{border-top:1.5px solid #334155;margin:0 20px 8px;margin-top:40px;}
+    .sign-nome{font-size:.78rem;font-weight:700;color:#334155;}
+    .sign-cargo{font-size:.68rem;color:#94a3b8;}
+
+    /* ── Rodapé ── */
+    .ped-footer{padding:14px 24px;background:#f8fafc;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+    .ped-footer-txt{font-size:.65rem;color:#94a3b8;}
+    .ped-footer-status{display:inline-flex;align-items:center;gap:5px;background:#dcfce7;color:#15803d;font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+
+    /* ── Loading ── */
+    .state-box{text-align:center;padding:80px 20px;color:#94a3b8;}
+    .state-box i{font-size:2rem;margin-bottom:12px;display:block;}
+
+    /* ── Print ── */
+    @media print{
+      .top-bar,.btn-print,.btn-back{display:none!important;}
+      body{background:#fff;}
+      .container{margin:0;padding:0;max-width:100%;}
+      .pedido{border-radius:0;box-shadow:none;}
+      tbody tr:hover{background:transparent;}
+    }
+
+    /* ── Mobile ── */
+    @media(max-width:600px){
+      .ped-header{flex-direction:column;}
+      .ped-header-right{text-align:left;}
+      .ped-info-grid,.ped-cond,.ped-sign{grid-template-columns:1fr;}
+      .ped-info-block,.ped-cond-block{border-right:none;border-bottom:1px solid #f1f5f9;}
+      .ped-ref{flex-direction:column;}
+      .ped-ref-item{border-right:none;border-bottom:1px solid #f1f5f9;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Barra de ações -->
+<div class="top-bar">
+  <div class="top-bar-logo">
+    <div class="top-bar-logo-icon"><i class="fas fa-hard-hat"></i></div>
+    <span>SIS<b>OBRAS</b></span>
+  </div>
+  <div class="top-bar-actions">
+    <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+    <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Imprimir / PDF</button>
+  </div>
+</div>
+
+<div class="container">
+  <div id="loading" class="state-box">
+    <i class="fas fa-circle-notch fa-spin" style="color:#2563eb"></i>
+    <p>Carregando pedido...</p>
+  </div>
+  <div id="pedido" class="pedido" style="display:none"></div>
+</div>
+
+<script>
+function fmt(v){ return 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('pt-BR') : '—'; }
+function extenso(v){
+  // extenso simples
+  return fmt(v);
+}
+
+function getAuthToken(){
+  return localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
+}
+
+async function load() {
+  const params      = new URLSearchParams(window.location.search);
+  const id          = params.get('id');
+  const shareToken  = params.get('token');
+
+  let url, headers = {};
+
+  if (shareToken && !id) {
+    // Acesso público via link compartilhado
+    url = `/api/compras/pedidos/publico/${shareToken}`;
+  } else if (id) {
+    // Acesso autenticado
+    const jwtToken = new URLSearchParams(window.location.search).get('jwt') || getAuthToken();
+    url = `/api/compras/pedidos/${id}`;
+    headers = { Authorization: `Bearer ${jwtToken}` };
+  } else {
+    document.getElementById('loading').innerHTML = '<i class="fas fa-exclamation-circle" style="color:#ef4444"></i><p>Link inválido.</p>';
+    return;
+  }
+
+  try {
+    const res  = await fetch(url, { headers });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || data.error || `Erro ${res.status}`);
+    render(data);
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `<i class="fas fa-exclamation-circle" style="color:#ef4444"></i><p>${e.message}</p>`;
+  }
+}
+
+function render(p) {
+  document.getElementById('loading').style.display = 'none';
+  const el = document.getElementById('pedido');
+  el.style.display = 'block';
+  document.title = `${p.numero} — Pedido de Compra`;
+
+  const fornNome    = p.nome_fantasia || p.razao_social || '—';
+  const empresaNome = p.empresa_nome  || 'Empresa';
+  const obraNome    = p.obra_nome     || '—';
+
+  el.innerHTML = `
+    <!-- Cabeçalho -->
+    <div class="ped-header">
+      <div class="ped-header-empresa">
+        <h1>${empresaNome}</h1>
+        <p>
+          ${p.empresa_cnpj     ? `CNPJ: ${p.empresa_cnpj}<br>` : ''}
+          ${p.empresa_endereco ? `${p.empresa_endereco}<br>`   : ''}
+          ${p.empresa_telefone ? `Tel: ${p.empresa_telefone}<br>` : ''}
+          ${p.empresa_email    ? p.empresa_email : ''}
+        </p>
+      </div>
+      <div class="ped-header-right">
+        <div class="ped-tipo">Pedido de Compra</div>
+        <div class="ped-numero">${p.numero}</div>
+        <div class="ped-data"><i class="fas fa-calendar-alt" style="margin-right:4px;opacity:.5"></i>${fmtDate(p.data_pedido)}</div>
+      </div>
+    </div>
+
+    <!-- Fornecedor + Obra -->
+    <div class="ped-info-grid">
+      <div class="ped-info-block">
+        <div class="ped-info-label"><i class="fas fa-truck"></i> Fornecedor</div>
+        <div class="ped-info-nome">${fornNome}</div>
+        <div class="ped-info-detalhe">
+          ${p.cnpj         ? `CNPJ: ${p.cnpj}<br>`                        : ''}
+          ${p.forn_endereco? `${p.forn_endereco}${p.forn_cidade ? ', '+p.forn_cidade : ''}${p.forn_estado ? '/'+p.forn_estado : ''}<br>` : ''}
+          ${p.telefone     ? `Tel: ${p.telefone}<br>`                      : ''}
+          ${p.forn_email   ? p.forn_email                                  : ''}
+        </div>
+      </div>
+      <div class="ped-info-block">
+        <div class="ped-info-label"><i class="fas fa-hard-hat"></i> Obra / Destino</div>
+        <div class="ped-info-nome">${obraNome}</div>
+        <div class="ped-info-detalhe">${p.obra_endereco || 'Endereço não informado'}</div>
+      </div>
+    </div>
+
+    <!-- Referência cotação -->
+    <div class="ped-ref">
+      <div class="ped-ref-item">
+        <div class="ped-ref-label">Cotação de origem</div>
+        <div class="ped-ref-val">${p.cotacao_numero} — ${p.cotacao_titulo || ''}</div>
+      </div>
+      <div class="ped-ref-item">
+        <div class="ped-ref-label">Data do pedido</div>
+        <div class="ped-ref-val">${fmtDate(p.data_pedido)}</div>
+      </div>
+      <div class="ped-ref-item">
+        <div class="ped-ref-label">Total de itens</div>
+        <div class="ped-ref-val">${p.itens.length} ite${p.itens.length!==1?'ns':'m'}</div>
+      </div>
+      <div class="ped-ref-item">
+        <div class="ped-ref-label">Status</div>
+        <div class="ped-ref-val" style="color:#15803d;font-weight:700">✓ Emitido</div>
+      </div>
+    </div>
+
+    <!-- Itens -->
+    <div class="ped-itens">
+      <div class="ped-itens-title"><i class="fas fa-list"></i> Itens do Pedido</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:36px">#</th>
+            <th>Descrição</th>
+            <th class="c">Unidade</th>
+            <th class="r">Quantidade</th>
+            <th class="r">Preço Unit.</th>
+            <th class="r">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${p.itens.map((item, i) => `
+            <tr>
+              <td style="color:#94a3b8;font-size:.75rem">${String(i+1).padStart(2,'0')}</td>
+              <td class="td-desc">${item.descricao}</td>
+              <td class="c" style="color:#64748b">${item.unidade}</td>
+              <td class="r td-num">${Number(item.quantidade).toLocaleString('pt-BR',{minimumFractionDigits:3})}</td>
+              <td class="r td-num">${fmt(item.valor_unitario)}</td>
+              <td class="r td-num" style="color:#0f172a;font-weight:800">${fmt(item.valor_total)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Total -->
+    <div class="ped-total">
+      <div class="ped-total-box">
+        <div class="ped-total-label">Valor Total do Pedido</div>
+        <div class="ped-total-val">${fmt(p.valor_total)}</div>
+      </div>
+    </div>
+
+    <!-- Condições -->
+    <div class="ped-cond">
+      <div class="ped-cond-block">
+        <div class="ped-cond-label">Condições de pagamento</div>
+        <div class="ped-cond-val">${p.condicao_pagamento || 'A combinar'}</div>
+      </div>
+      <div class="ped-cond-block">
+        <div class="ped-cond-label">Prazo de entrega</div>
+        <div class="ped-cond-val">${p.prazo_entrega || 'A combinar'}</div>
+      </div>
+    </div>
+
+    ${p.observacoes ? `
+    <div style="padding:16px 24px;border-top:1px solid #f1f5f9;background:#fffbeb;">
+      <div class="ped-cond-label" style="color:#b45309"><i class="fas fa-comment-alt" style="margin-right:4px"></i> Observações</div>
+      <div class="ped-cond-val">${p.observacoes}</div>
+    </div>` : ''}
+
+    <!-- Assinaturas -->
+    <div class="ped-sign">
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <div class="sign-nome">${empresaNome}</div>
+        <div class="sign-cargo">Responsável pela compra</div>
+      </div>
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <div class="sign-nome">${fornNome}</div>
+        <div class="sign-cargo">Fornecedor / Vendedor</div>
+      </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="ped-footer">
+      <span class="ped-footer-txt">Documento gerado por <strong>SISENG</strong> em ${fmtDate(new Date())}</span>
+      <span class="ped-footer-status"><i class="fas fa-check-circle"></i> Pedido emitido</span>
+    </div>
+  `;
+}
+
+load();
+</script>
+</body>
+</html>

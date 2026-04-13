@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responder Cotação — SISENG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+      color: #334155;
+    }
+
+    /* ── Topo ───────────────────────────────────────────────── */
+    .top-bar {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+    .top-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .top-logo i { font-size: 1.3rem; color: #f97316; }
+    .top-logo span { font-size: 1rem; font-weight: 300; letter-spacing: .02em; }
+    .top-logo strong { font-weight: 800; }
+    .top-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: .75rem;
+      color: rgba(255,255,255,.9);
+      font-weight: 600;
+    }
+    .top-badge i { color: #f97316; font-size: .65rem; }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Estados: loading / erro / sucesso ─────────────────── */
+    .state-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 60px 32px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .state-card .state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    .state-card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+    .state-card p  { font-size: .875rem; color: #64748b; line-height: 1.6; }
+    .state-card.loading .state-icon { color: #2563eb; animation: spin 1s linear infinite; }
+    .state-card.success .state-icon { color: #22c55e; }
+    .state-card.error   .state-icon { color: #ef4444; }
+    .state-card.already .state-icon { color: #f59e0b; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+
+    /* ── Header da cotação ──────────────────────────────────── */
+    .cot-header {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      border-left: 5px solid #2563eb;
+    }
+    .cot-empresa {
+      font-size: .75rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 4px;
+    }
+    .cot-titulo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .cot-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: .8rem;
+      color: #64748b;
+    }
+    .cot-meta span { display: flex; align-items: center; gap: 6px; }
+    .cot-meta i { color: #2563eb; font-size: .7rem; }
+    .cot-obs {
+      margin-top: 14px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .82rem;
+      color: #78350f;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .cot-obs i { margin-top: 2px; flex-shrink: 0; color: #d97706; }
+
+    /* ── Card do formulário ─────────────────────────────────── */
+    .form-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .form-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #f8fafc;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .form-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: .95rem;
+      color: #0f172a;
+    }
+    .form-card-title i { color: #2563eb; }
+    .form-card-sub {
+      font-size: .75rem;
+      color: #64748b;
+    }
+
+    /* ── Tabela de itens ─────────────────────────────────────── */
+    .itens-wrap { overflow-x: auto; }
+    .itens-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+    .itens-table thead tr { background: #1e3a5f; }
+    .itens-table thead th {
+      padding: 12px 14px;
+      text-align: left;
+      font-size: .72rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.9);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .itens-table thead th.th-r { text-align: right; }
+    .itens-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .15s; }
+    .itens-table tbody tr:hover { background: #f8fafc; }
+    .itens-table td { padding: 14px; vertical-align: top; }
+
+    .item-nome { font-weight: 600; color: #0f172a; font-size: .875rem; }
+    .item-grupo { font-size: .72rem; color: #94a3b8; margin-top: 2px; }
+    .item-espec { font-size: .72rem; color: #64748b; margin-top: 3px; font-style: italic; }
+    .item-qty   { font-weight: 700; color: #2563eb; text-align: right; white-space: nowrap; }
+
+    .field-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .field-wrap label {
+      font-size: .68rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .field-wrap label .req { color: #ef4444; margin-left: 2px; }
+
+    .input-valor {
+      width: 130px;
+      padding: 9px 10px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: .875rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-align: right;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .input-valor:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .input-valor.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+
+    .input-text {
+      width: 100%;
+      min-width: 120px;
+      padding: 9px 10px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: .82rem;
+      color: #0f172a;
+      transition: border-color .2s;
+      font-family: inherit;
+    }
+    .input-text:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+
+    .td-obs { min-width: 180px; }
+
+    /* ── Card obs geral ─────────────────────────────────────── */
+    .obs-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      padding: 22px 28px;
+      margin-bottom: 24px;
+    }
+    .obs-card label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+    .obs-card label i { color: #2563eb; }
+    .obs-card textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: .875rem;
+      color: #0f172a;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+      transition: border-color .2s;
+    }
+    .obs-card textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+
+    /* ── Footer de ação ─────────────────────────────────────── */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .action-info { font-size: .8rem; color: #64748b; display: flex; align-items: center; gap: 7px; }
+    .action-info i { color: #f97316; }
+
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 32px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+      box-shadow: 0 4px 16px rgba(249,115,22,.4);
+      font-family: inherit;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,.5); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* ── Toast ───────────────────────────────────────────────── */
+    .toast-container {
+      position: fixed; bottom: 20px; right: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 9999;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px; border-radius: 10px;
+      font-size: .85rem; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      animation: toastIn .3s ease;
+      max-width: 340px;
+      color: #fff;
+    }
+    .toast.success { background: #22c55e; }
+    .toast.error   { background: #ef4444; }
+    .toast.info    { background: #2563eb; }
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .page-wrap { padding: 16px 12px 60px; }
+      .cot-header, .obs-card { padding: 18px 16px; }
+      .btn-submit { width: 100%; justify-content: center; }
+      .action-bar { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ TOPO ═══════════════ -->
+<div class="top-bar">
+  <div class="top-logo">
+    <i class="fas fa-hard-hat"></i>
+    <span>SIS<strong>ENG</strong></span>
+  </div>
+  <div class="top-badge">
+    <i class="fas fa-lock"></i>
+    Portal do Fornecedor
+  </div>
+</div>
+
+<!-- ═══════════════ CONTEÚDO ═══════════════ -->
+<div class="page-wrap">
+
+  <!-- Estado: Carregando -->
+  <div class="state-card loading" id="stateLoading">
+    <div class="state-icon"><i class="fas fa-circle-notch fa-spin"></i></div>
+    <h2>Carregando cotação...</h2>
+    <p>Aguarde enquanto buscamos os dados.</p>
+  </div>
+
+  <!-- Estado: Erro (token inválido / expirado) -->
+  <div class="state-card error hidden" id="stateError">
+    <div class="state-icon"><i class="fas fa-times-circle"></i></div>
+    <h2 id="errorTitle">Link inválido ou expirado</h2>
+    <p id="errorMsg">Este link de cotação não é válido ou já expirou. Entre em contato com a empresa para obter um novo link.</p>
+  </div>
+
+  <!-- Estado: Já respondida -->
+  <div class="state-card already hidden" id="stateAlready">
+    <div class="state-icon"><i class="fas fa-check-double"></i></div>
+    <h2>Cotação já respondida</h2>
+    <p>Você já enviou sua proposta para esta cotação. Não é possível enviar novamente.</p>
+  </div>
+
+  <!-- Estado: Sucesso (após envio) -->
+  <div class="state-card success hidden" id="stateSuccess">
+    <div class="state-icon"><i class="fas fa-check-circle"></i></div>
+    <h2>Proposta enviada com sucesso!</h2>
+    <p id="successMsg">Sua proposta foi registrada. A empresa irá analisar as cotações e entrará em contato.</p>
+    <p style="margin-top:12px;font-size:.78rem;color:#94a3b8">Você pode fechar esta página.</p>
+  </div>
+
+  <!-- Conteúdo principal (oculto até carregar) -->
+  <div id="mainContent" class="hidden">
+
+    <!-- Header da cotação -->
+    <div class="cot-header">
+      <div class="cot-empresa" id="cotEmpresa">—</div>
+      <div class="cot-titulo" id="cotTitulo">—</div>
+      <div class="cot-meta">
+        <span><i class="fas fa-user-tie"></i> Fornecedor: <strong id="cotFornecedor">—</strong></span>
+        <span id="cotValidadeWrap" class="hidden"><i class="fas fa-calendar-alt"></i> Válido até: <strong id="cotValidade">—</strong></span>
+      </div>
+      <div class="cot-obs hidden" id="cotObsWrap">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="cotObs"></span>
+      </div>
+    </div>
+
+    <!-- Tabela de itens -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-title">
+          <i class="fas fa-boxes"></i>
+          Itens para Cotar
+        </div>
+        <div class="form-card-sub">Preencha o valor unitário para cada item</div>
+      </div>
+      <div class="itens-wrap">
+        <table class="itens-table">
+          <thead>
+            <tr>
+              <th>Descrição do Item</th>
+              <th class="th-r">Qtd / Un.</th>
+              <th>Valor Unit. (R$) <span style="color:#f97316">*</span></th>
+              <th>Marca / Fabricante</th>
+              <th class="td-obs">Observação</th>
+            </tr>
+          </thead>
+          <tbody id="itensBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Observações gerais -->
+    <div class="obs-card">
+      <label for="obsGeral">
+        <i class="fas fa-comment-alt"></i>
+        Observações Gerais (opcional)
+      </label>
+      <textarea id="obsGeral" placeholder="Condições de pagamento, prazo de entrega, validade da proposta..."></textarea>
+    </div>
+
+    <!-- Barra de ação -->
+    <div class="action-bar">
+      <div class="action-info">
+        <i class="fas fa-info-circle"></i>
+        Campos marcados com <span style="color:#ef4444;font-weight:700">*</span> são obrigatórios.
+        Itens sem valor serão ignorados.
+      </div>
+      <button class="btn-submit" id="btnEnviar" onclick="enviarResposta()">
+        <i class="fas fa-paper-plane"></i>
+        Enviar Proposta
+      </button>
+    </div>
+
+  </div><!-- /mainContent -->
+</div><!-- /page-wrap -->
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SISENG — Portal do Fornecedor (cotacao-responder.html)
+   Rota pública — sem autenticação
+═══════════════════════════════════════════════════════════ */
+
+const API = '';  // mesmo domínio (backend serve o frontend)
+let token       = null;
+let cotacaoData = null;
+
+/* ── Init ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  token = params.get('token');
+  if (!token) {
+    showState('error', 'Link inválido', 'Nenhum token foi fornecido neste link.');
+    return;
+  }
+  carregarCotacao();
+});
+
+/* ── Carregar cotação pelo token ─────────────────────────── */
+async function carregarCotacao() {
+  try {
+    const res = await fetch(`${API}/api/compras/cotacao/token/${token}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (data.code === 'ALREADY_ANSWERED') {
+        showState('already');
+        return;
+      }
+      showState('error', data.message || 'Erro ao carregar cotação.');
+      return;
+    }
+
+    cotacaoData = data;
+    renderCotacao(data);
+    showState('main');
+
+  } catch (err) {
+    showState('error', 'Falha na conexão', 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.');
+  }
+}
+
+/* ── Renderizar cotação ──────────────────────────────────── */
+function renderCotacao(data) {
+  document.title = `Cotação — ${data.titulo || 'SISENG'}`;
+  document.getElementById('cotEmpresa').textContent   = data.empresa_nome || 'SISENG';
+  document.getElementById('cotTitulo').textContent    = data.titulo || 'Cotação';
+  document.getElementById('cotFornecedor').textContent = data.fornecedor?.nome_fantasia || data.fornecedor?.razao_social || '—';
+
+  if (data.data_validade) {
+    const dt = new Date(data.data_validade);
+    const d  = String(dt.getUTCDate()).padStart(2,'0');
+    const m  = String(dt.getUTCMonth()+1).padStart(2,'0');
+    const y  = dt.getUTCFullYear();
+    document.getElementById('cotValidade').textContent = `${d}/${m}/${y}`;
+    document.getElementById('cotValidadeWrap').classList.remove('hidden');
+  }
+
+  if (data.obs_geral) {
+    document.getElementById('cotObs').textContent = data.obs_geral;
+    document.getElementById('cotObsWrap').classList.remove('hidden');
+  }
+
+  const tbody = document.getElementById('itensBody');
+  tbody.innerHTML = (data.itens || []).map(item => `
+    <tr>
+      <td>
+        <div class="item-nome">${escHtml(item.descricao)}</div>
+        ${item.grupo_nome ? `<div class="item-grupo">${escHtml(item.grupo_nome)}</div>` : ''}
+        ${item.especificacao ? `<div class="item-espec">${escHtml(item.especificacao)}</div>` : ''}
+      </td>
+      <td class="item-qty">${formatQty(item.quantidade)} ${escHtml(item.unidade)}</td>
+      <td>
+        <div class="field-wrap">
+          <label>Valor Unit. <span class="req">*</span></label>
+          <input type="number"
+                 class="input-valor"
+                 id="val_${item.id}"
+                 placeholder="0,00"
+                 min="0.01" step="0.01"
+                 inputmode="decimal" />
+        </div>
+      </td>
+      <td>
+        <div class="field-wrap">
+          <label>Marca</label>
+          <input type="text"
+                 class="input-text"
+                 id="marca_${item.id}"
+                 placeholder="Opcional" />
+        </div>
+      </td>
+      <td class="td-obs">
+        <div class="field-wrap">
+          <label>Observação</label>
+          <input type="text"
+                 class="input-text"
+                 id="obs_${item.id}"
+                 placeholder="Opcional" />
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── Enviar resposta ─────────────────────────────────────── */
+async function enviarResposta() {
+  if (!cotacaoData) return;
+
+  const itens = (cotacaoData.itens || []).map(item => {
+    const valInput = document.getElementById(`val_${item.id}`);
+    const valor = parseFloat(valInput?.value);
+    valInput?.classList.remove('error');
+
+    return {
+      id_cotacao_item: item.id,
+      valor_unitario:  isNaN(valor) || valor <= 0 ? null : valor,
+      marca:           document.getElementById(`marca_${item.id}`)?.value.trim() || null,
+      observacao:      document.getElementById(`obs_${item.id}`)?.value.trim()   || null,
+    };
+  });
+
+  // Valida: pelo menos 1 item com valor
+  const comValor = itens.filter(i => i.valor_unitario !== null);
+  if (!comValor.length) {
+    showToast('Informe o valor de pelo menos um item.', 'error');
+    // Destaca o primeiro campo
+    const primeiro = cotacaoData.itens[0];
+    if (primeiro) document.getElementById(`val_${primeiro.id}`)?.classList.add('error');
+    return;
+  }
+
+  const payload = {
+    itens,
+    observacoes: document.getElementById('obsGeral')?.value.trim() || null,
+  };
+
+  const btn = document.getElementById('btnEnviar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+  try {
+    const res  = await fetch(`${API}/api/compras/cotacao/token/${token}/responder`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.message || 'Erro ao enviar proposta.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Proposta';
+      return;
+    }
+
+    // Sucesso
+    const nome = cotacaoData.fornecedor?.nome_fantasia || cotacaoData.fornecedor?.razao_social || 'fornecedor';
+    document.getElementById('successMsg').textContent =
+      `Proposta de "${nome}" registrada com sucesso para "${cotacaoData.titulo}". A empresa irá analisar e entrar em contato.`;
+    showState('success');
+
+  } catch (err) {
+    showToast('Falha na conexão. Tente novamente.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Proposta';
+  }
+}
+
+/* ── Helpers de estado ───────────────────────────────────── */
+function showState(state, title, msg) {
+  document.getElementById('stateLoading').classList.add('hidden');
+  document.getElementById('stateError').classList.add('hidden');
+  document.getElementById('stateAlready').classList.add('hidden');
+  document.getElementById('stateSuccess').classList.add('hidden');
+  document.getElementById('mainContent').classList.add('hidden');
+
+  if (state === 'main') {
+    document.getElementById('mainContent').classList.remove('hidden');
+  } else if (state === 'error') {
+    if (title) document.getElementById('errorTitle').textContent = title;
+    if (msg)   document.getElementById('errorMsg').textContent   = msg;
+    document.getElementById('stateError').classList.remove('hidden');
+  } else if (state === 'already') {
+    document.getElementById('stateAlready').classList.remove('hidden');
+  } else if (state === 'success') {
+    document.getElementById('stateSuccess').classList.remove('hidden');
+  }
+}
+
+/* ── Utilitários ─────────────────────────────────────────── */
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatQty(n) {
+  return Number(n).toLocaleString('pt-BR', { maximumFractionDigits: 3 });
+}
+
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+  toast.innerHTML = `<i class="fas fa-${icon}"></i> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+</script>
+</body>
+</html>
