@@ -64,7 +64,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ── Serve frontend (landing page) ─────────────
-app.use(express.static(path.join(__dirname, '../../frontend/public')));
+const frontendPath = path.join(__dirname, '../../frontend/public');
+const frontendPathAlt = path.join(__dirname, '../../../frontend/public');
+const fs = require('fs');
+const FRONTEND = fs.existsSync(frontendPath) ? frontendPath : frontendPathAlt;
+app.use(express.static(FRONTEND));
 
 // ── Rotas da API ───────────────────────────────
 app.use('/api/auth', authRoutes);
@@ -94,7 +98,7 @@ app.get('*', (req, res) => {
   if (req.path.includes('.')) {
     return res.status(404).send('Arquivo não encontrado.');
   }
-  res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
+  res.sendFile(path.join(FRONTEND, 'index.html'));
 });
 
 // ── Error handler global ───────────────────────
