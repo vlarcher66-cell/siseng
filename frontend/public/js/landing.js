@@ -3,7 +3,7 @@
    Animações, contadores, scroll reveal, interações
 ═══════════════════════════════════════════════════════════ */
 
-const API_URL = '/api';
+const API_URL = (typeof API_BASE !== 'undefined') ? API_BASE : '/api';
 
 /* ── Scroll Reveal ──────────────────────────────────────── */
 const revealObserver = new IntersectionObserver((entries) => {

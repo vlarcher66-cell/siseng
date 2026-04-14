@@ -32,8 +32,21 @@ app.use(helmet({
 }));
 
 // ── CORS ───────────────────────────────────────
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://www.siseng.com.br',
+  'https://siseng.com.br',
+  'https://siseng-production.up.railway.app',
+].filter(Boolean);
+
 app.use(cors({
-  origin:      process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.includes('vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // permissivo por enquanto
+    }
+  },
   credentials: true
 }));
 

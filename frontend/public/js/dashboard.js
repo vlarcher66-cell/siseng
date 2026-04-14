@@ -3,7 +3,7 @@
    Gráficos SVG, contadores, tabela, atividade, sidebar
 ═══════════════════════════════════════════════════════════ */
 
-const API_URL = '/api';
+const API_URL = (typeof API_BASE !== 'undefined') ? API_BASE : '/api';
 
 /* ══════════════════════════════════════════════════════════
    DADOS MOCK (substituir por fetch quando API estiver pronta)
