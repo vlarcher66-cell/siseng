@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SISENG — Análise Cronograma  v1.0
    Orçado x Realizado — cruzamento de Etapas + Medições
 ═══════════════════════════════════════════════════════════ */
@@ -91,7 +91,7 @@ function getToken() {
 }
 
 async function apiGet(path) {
-  const res = await fetch('/api' + path, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+  const res = await fetch('https://siseng-production.up.railway.app/api' + path, { headers: { 'Authorization': `Bearer ${getToken()}` } });
   if (!res.ok) throw new Error(`API ${path} → ${res.status}`);
   return res.json();
 }
@@ -148,7 +148,7 @@ async function loadObrasCount() {
   const token = localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
   if (!token) return;
   try {
-    const res = await fetch('/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
+    const res = await fetch('https://siseng-production.up.railway.app/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
     if (res.ok) {
       const data = await res.json();
       const el = document.getElementById('obrasCount');

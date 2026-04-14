@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SISENG — Etapas CRUD  v1.0
    Gestão de etapas de obra com tipos de execução
 ═══════════════════════════════════════════════════════════ */
@@ -194,7 +194,7 @@ async function loadObrasCount() {
   const token = getToken();
   if (!token) return;
   try {
-    const res = await fetch('/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
+    const res = await fetch('https://siseng-production.up.railway.app/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
     if (res.ok) {
       const data = await res.json();
       const el = document.getElementById('obrasCount');

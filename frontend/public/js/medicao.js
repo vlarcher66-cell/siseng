@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SISENG — Medição (Boletim de Medição)  v1.0
 ═══════════════════════════════════════════════════════════ */
 
@@ -61,7 +61,7 @@ async function apiCall(method, path, body) {
     headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
   };
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch('/api' + path, opts);
+  const res = await fetch('https://siseng-production.up.railway.app/api' + path, opts);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
   return data;
@@ -106,7 +106,7 @@ async function loadObrasFromApi() {
   const token = localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
   if (!token) return;
   try {
-    const res = await fetch('/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
+    const res = await fetch('https://siseng-production.up.railway.app/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
     if (res.ok) _obrasCache = await res.json();
   } catch(_) {}
 }

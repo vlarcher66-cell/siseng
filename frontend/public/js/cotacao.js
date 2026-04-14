@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SISENG — Cotações  v2.0
    Integrado com API REST /api/compras
 ═══════════════════════════════════════════════════════════ */
@@ -32,7 +32,7 @@ async function loadObrasCount() {
   const token = localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
   if (!token) return;
   try {
-    const res = await fetch('/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
+    const res = await fetch('https://siseng-production.up.railway.app/api/obras', { headers: { 'Authorization': `Bearer ${token}` } });
     if (res.ok) {
       const data = await res.json();
       const el = document.getElementById('obrasCount');
@@ -81,7 +81,7 @@ async function loadAll() {
 
     // Carrega obras para vincular à cotação
     try {
-      const obraRes = await fetch('/api/obras', { headers: { 'Authorization': `Bearer ${getToken()}` } });
+      const obraRes = await fetch('https://siseng-production.up.railway.app/api/obras', { headers: { 'Authorization': `Bearer ${getToken()}` } });
       if (obraRes.ok) obras = await obraRes.json();
     } catch(_) {}
 

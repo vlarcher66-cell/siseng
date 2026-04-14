@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    SISENG — Obras CRUD  v1.0
    Gerenciamento completo de obras com localStorage
 ═══════════════════════════════════════════════════════════ */
@@ -136,7 +136,7 @@ function getToken() {
 }
 
 async function apiObras(method, path, body) {
-  const res = await fetch('/api' + path, {
+  const res = await fetch('https://siseng-production.up.railway.app/api' + path, {
     method,
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
     body: body ? JSON.stringify(body) : undefined
