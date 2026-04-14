@@ -108,7 +108,7 @@ app.use((err, req, res, next) => {
 });
 
 // ── Inicia servidor ────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀 SISENG rodando na porta ${PORT}`);
   console.log(`   🌐 http://localhost:${PORT}`);
   console.log(`   📡 API: http://localhost:${PORT}/api`);
