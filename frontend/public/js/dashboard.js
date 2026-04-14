@@ -3,7 +3,7 @@
    Gráficos SVG, contadores, tabela, atividade, sidebar
 ═══════════════════════════════════════════════════════════ */
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 
 /* ══════════════════════════════════════════════════════════
    DADOS MOCK (substituir por fetch quando API estiver pronta)
