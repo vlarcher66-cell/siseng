@@ -118,4 +118,46 @@ async function listarPlanos(req, res) {
   }
 }
 
-module.exports = { login, requireSuperAdmin, dashboard, listarEmpresas, atualizarEmpresa, listarPlanos };
+/* ── Excluir empresa e todos os dados ── */
+async function excluirEmpresa(req, res) {
+  const { id } = req.params;
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    // Remove dados dependentes em ordem segura
+    const tabelas = [
+      'pedido_itens',
+      'pedidos_compra',
+      'resposta_itens',
+      'respostas_cotacao',
+      'mapa_cotacao',
+      'cotacao_fornecedores',
+      'cotacao_itens',
+      'cotacoes',
+      'itens_compra',
+      'subgrupos_item',
+      'grupos_item',
+      'medicoes',
+      'rdo',
+      'etapas',
+      'obras',
+      'usuarios',
+    ];
+
+    for (const tabela of tabelas) {
+      await conn.query(`DELETE FROM ${tabela} WHERE empresa_id=?`, [id]).catch(() => {});
+    }
+
+    await conn.query('DELETE FROM empresas WHERE id=?', [id]);
+    await conn.commit();
+    res.json({ message: 'Empresa excluída com sucesso.' });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).json({ message: err.message });
+  } finally {
+    conn.release();
+  }
+}
+
+module.exports = { login, requireSuperAdmin, dashboard, listarEmpresas, atualizarEmpresa, listarPlanos, excluirEmpresa };

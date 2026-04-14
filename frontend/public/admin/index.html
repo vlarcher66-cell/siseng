@@ -301,7 +301,7 @@
                   <th class="td-ctr">Usuários</th>
                   <th class="td-ctr">Obras</th>
                   <th class="td-ctr">Cotações</th>
-                  <th>Cadastro</th>
+                  <th class="td-ctr">Dias</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -470,13 +470,14 @@ function renderEmpresas(list) {
       <td class="td-ctr" style="color:#64748b">${e.total_usuarios}</td>
       <td class="td-ctr" style="color:#64748b">${e.total_obras}</td>
       <td class="td-ctr" style="color:#64748b">${e.total_cotacoes}</td>
-      <td style="color:#94a3b8;font-size:.78rem">${formatDate(e.criado_em)}</td>
+      <td class="td-ctr">${diasCadastro(e.criado_em)}</td>
       <td>
         <div class="row-actions">
           <button class="btn-sm blue" onclick="openModalEmpresa(${e.id})"><i class="fas fa-pen"></i> Editar</button>
           ${e.status==='ativo'    ? `<button class="btn-sm gray" onclick="setStatus(${e.id},'suspenso')">Suspender</button>`:''}
           ${e.status==='suspenso' ? `<button class="btn-sm green" onclick="setStatus(${e.id},'ativo')">Reativar</button>`:''}
           ${e.status==='trial'    ? `<button class="btn-sm green" onclick="setStatus(${e.id},'ativo')">Ativar</button>`:''}
+          ${botaoExcluir(e)}
         </div>
       </td>
     </tr>`).join('');
@@ -553,6 +554,31 @@ function trialHtml(d) {
 function formatDate(d) {
   if (!d) return '—';
   return new Date(d).toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function diasCadastro(criado_em) {
+  if (!criado_em) return '—';
+  const dias = Math.floor((new Date() - new Date(criado_em)) / 86400000);
+  const cor = dias > 15 ? '#dc2626' : dias > 10 ? '#ea580c' : '#16a34a';
+  return `<span style="font-weight:700;color:${cor}">${dias}d</span>`;
+}
+
+function botaoExcluir(e) {
+  const dias = Math.floor((new Date() - new Date(e.criado_em)) / 86400000);
+  const trialExpirado = e.status === 'trial' && dias > 15;
+  if (trialExpirado) {
+    return `<button class="btn-sm red" onclick="confirmarExcluir(${e.id},'${e.razao_social.replace(/'/g,'\\'')}')"><i class="fas fa-trash"></i> Excluir</button>`;
+  }
+  return `<button class="btn-sm gray" disabled title="Só disponível após 15 dias de trial sem fechar contrato" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button>`;
+}
+
+async function confirmarExcluir(id, nome) {
+  if (!confirm(`⚠️ Excluir "${nome}" e TODOS os dados (obras, usuários, cotações)?\n\nEssa ação é irreversível.`)) return;
+  try {
+    await apiAdmin('DELETE', `/empresas/${id}`);
+    showToast(`Empresa "${nome}" excluída.`);
+    loadEmpresas(); loadDashboard();
+  } catch(e) { showToast(e.message, 'error'); }
 }
 
 function showToast(msg, type='success') {
