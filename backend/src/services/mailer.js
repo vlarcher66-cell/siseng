@@ -171,7 +171,7 @@ async function sendTrialExpiringEmail(email, nome, empresa, diasRestantes) {
     <p style="color:#475569;font-size:14px;line-height:1.7;margin:12px 0">
       Assine um plano para continuar usando o SISENG sem interrupções.
     </p>
-    <div style="text-align:center">${btnPrimario(`${BASE}/app/configuracoes.html`, '⚡ Assinar agora')}</div>
+    <div style="text-align:center">${btnPrimario(`https://wa.me/5573999143401?text=Ol%C3%A1%2C+quero+assinar+o+SISENG+%28${encodeURIComponent(empresa)}%29`, '💬 Falar no WhatsApp e assinar')}</div>
   `;
   await transporter.sendMail({
     from: FROM, to: email,
@@ -204,9 +204,9 @@ async function sendTrialExpiredEmail(email, nome, empresa) {
         <tr><td style="padding:4px 0;font-size:13px;color:#166534">✅ Usuários e permissões</td></tr>
       </table>
     </div>
-    <div style="text-align:center">${btnPrimario(`${BASE}`, '🚀 Reativar minha conta')}</div>
+    <div style="text-align:center">${btnPrimario(`https://wa.me/5573999143401?text=Ol%C3%A1%2C+quero+reativar+minha+conta+no+SISENG+%28${encodeURIComponent(empresa)}%29`, '💬 Falar no WhatsApp e reativar')}</div>
     <p style="font-size:12px;color:#94a3b8;margin:16px 0 0;text-align:center">
-      Dúvidas? Fale conosco respondendo este e-mail ou pelo WhatsApp.
+      Nosso time responde rapidamente e vai reativar sua conta na hora.
     </p>
   `;
   await transporter.sendMail({
