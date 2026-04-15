@@ -567,12 +567,13 @@ function botaoExcluir(e) {
   const dias = Math.floor((new Date() - new Date(e.criado_em)) / 86400000);
   const trialExpirado = e.status === 'trial' && dias > 15;
   if (trialExpirado) {
-    return `<button class="btn-sm red" onclick="confirmarExcluir(${e.id},'${e.razao_social.replace(/'/g,'\\'')}')"><i class="fas fa-trash"></i> Excluir</button>`;
+    return `<button class="btn-sm red" onclick="confirmarExcluir(${e.id},this.dataset.nome)" data-nome="${e.razao_social.replace(/"/g,'&quot;')}"><i class="fas fa-trash"></i> Excluir</button>`;
   }
   return `<button class="btn-sm gray" disabled title="Só disponível após 15 dias de trial sem fechar contrato" style="opacity:.4;cursor:not-allowed"><i class="fas fa-trash"></i></button>`;
 }
 
-async function confirmarExcluir(id, nome) {
+async function confirmarExcluir(id, nomeEl) {
+  const nome = typeof nomeEl === 'string' ? nomeEl : nomeEl;
   if (!confirm(`⚠️ Excluir "${nome}" e TODOS os dados (obras, usuários, cotações)?\n\nEssa ação é irreversível.`)) return;
   try {
     await apiAdmin('DELETE', `/empresas/${id}`);
