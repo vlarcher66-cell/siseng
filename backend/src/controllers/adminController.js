@@ -125,21 +125,34 @@ async function excluirEmpresa(req, res) {
   try {
     await conn.beginTransaction();
 
-    // Remove dados dependentes em ordem segura
+    // 1. Filhos sem empresa_id (dependem de pai que será deletado em cascata,
+    //    mas apagamos antes para evitar conflito de FK com ON DELETE RESTRICT)
+    await conn.query(`DELETE pi FROM pedido_itens pi INNER JOIN pedidos_compra pc ON pc.id=pi.id_pedido INNER JOIN empresas e ON e.id=pc.empresa_id WHERE e.id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE ri FROM resposta_itens ri INNER JOIN respostas_cotacao rc ON rc.id=ri.id_resposta INNER JOIN cotacoes c ON c.id=rc.id_cotacao WHERE c.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE mc FROM mapa_cotacao mc INNER JOIN cotacoes c ON c.id=mc.id_cotacao WHERE c.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE rc FROM respostas_cotacao rc INNER JOIN cotacoes c ON c.id=rc.id_cotacao WHERE c.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE cf FROM cotacao_fornecedores cf INNER JOIN cotacoes c ON c.id=cf.id_cotacao WHERE c.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE ci FROM cotacao_itens ci INNER JOIN cotacoes c ON c.id=ci.id_cotacao WHERE c.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE mi FROM medicao_itens mi INNER JOIN medicoes m ON m.id=mi.medicao_id WHERE m.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE ra FROM rdo_anexos ra INNER JOIN rdo r ON r.id=ra.rdo_id WHERE r.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE rm FROM rdo_mao_obra rm INNER JOIN rdo r ON r.id=rm.rdo_id WHERE r.empresa_id=?`, [id]).catch(() => {});
+    await conn.query(`DELETE re FROM rdo_etapas re INNER JOIN rdo r ON r.id=re.rdo_id WHERE r.empresa_id=?`, [id]).catch(() => {});
+
+    // 2. Tabelas com empresa_id direto (ordem: filhos antes dos pais)
     const tabelas = [
-      'pedido_itens',
       'pedidos_compra',
-      'resposta_itens',
-      'respostas_cotacao',
-      'mapa_cotacao',
-      'cotacao_fornecedores',
-      'cotacao_itens',
       'cotacoes',
+      'medicoes',
+      'rdo',
+      'rdo_funcoes',
+      'rdo_responsaveis',
       'itens_compra',
       'subgrupos_item',
       'grupos_item',
-      'medicoes',
-      'rdo',
+      'financeiro',
+      'documentos',
+      'diario_obra',
+      'fornecedores',
       'etapas',
       'obras',
       'usuarios',
