@@ -24,6 +24,22 @@ async function migrateEtapasColumns() {
   }
 }
 migrateEtapasColumns().catch(err => console.warn('Migrate etapas:', err.message));
+
+/* ── Migração: colunas de controle do trial job ── */
+async function migrateTrialCols() {
+  const alters = [
+    "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_3d_enviado DATETIME NULL",
+    "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_0d_enviado DATETIME NULL",
+  ];
+  for (const sql of alters) {
+    try { await pool.query(sql); } catch (_) {}
+  }
+}
+migrateTrialCols().catch(err => console.warn('Migrate trial cols:', err.message));
+
+/* ── Job automático de trial ── */
+const { startTrialJob } = require('./services/trialJob');
+startTrialJob();
 const PORT = process.env.PORT || 3000;
 
 // ── Segurança ──────────────────────────────────

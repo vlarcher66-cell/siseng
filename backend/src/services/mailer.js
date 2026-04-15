@@ -180,4 +180,40 @@ async function sendTrialExpiringEmail(email, nome, empresa, diasRestantes) {
   });
 }
 
-module.exports = { sendResetEmail, sendWelcomeEmail, sendUserInviteEmail, sendTrialExpiringEmail };
+/* ── Trial expirado — e-mail de recuperação ──────────────── */
+async function sendTrialExpiredEmail(email, nome, empresa) {
+  const corpo = `
+    ${saudacao(nome)}
+    <p style="color:#475569;font-size:14px;line-height:1.7;margin:12px 0">
+      O período de teste gratuito da empresa <strong style="color:#1e3a5f">${empresa}</strong> encerrou e o acesso foi <strong style="color:#dc2626">suspenso temporariamente</strong>.
+    </p>
+    <div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:20px 24px;margin:20px 0;text-align:center">
+      <p style="margin:0;font-size:28px">🔒</p>
+      <p style="margin:8px 0 0;font-size:14px;color:#991b1b;font-weight:700">Acesso suspenso</p>
+      <p style="margin:6px 0 0;font-size:13px;color:#b91c1c">Seus dados estão seguros e preservados.</p>
+    </div>
+    <p style="color:#475569;font-size:14px;line-height:1.7;margin:12px 0">
+      Reative sua conta agora e continue de onde parou. Nenhum dado foi perdido.
+    </p>
+    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:18px 24px;margin:20px 0">
+      <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em">O que você não vai perder</p>
+      <table cellpadding="0" cellspacing="0" width="100%">
+        <tr><td style="padding:4px 0;font-size:13px;color:#166534">✅ Todas as obras cadastradas</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#166534">✅ Etapas, medições e relatórios</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#166534">✅ Histórico de compras e cotações</td></tr>
+        <tr><td style="padding:4px 0;font-size:13px;color:#166534">✅ Usuários e permissões</td></tr>
+      </table>
+    </div>
+    <div style="text-align:center">${btnPrimario(`${BASE}`, '🚀 Reativar minha conta')}</div>
+    <p style="font-size:12px;color:#94a3b8;margin:16px 0 0;text-align:center">
+      Dúvidas? Fale conosco respondendo este e-mail ou pelo WhatsApp.
+    </p>
+  `;
+  await transporter.sendMail({
+    from: FROM, to: email,
+    subject: `Seu acesso ao SISENG foi suspenso — Reative agora 🔒`,
+    html: baseTemplate('Acesso suspenso — SISENG', '#991b1b', corpo),
+  });
+}
+
+module.exports = { sendResetEmail, sendWelcomeEmail, sendUserInviteEmail, sendTrialExpiringEmail, sendTrialExpiredEmail };
