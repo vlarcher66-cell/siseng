@@ -35,11 +35,11 @@ async function migrateTrialCols() {
     try { await pool.query(sql); } catch (_) {}
   }
 }
-migrateTrialCols().catch(err => console.warn('Migrate trial cols:', err.message));
-
-/* ── Job automático de trial ── */
+/* ── Job automático de trial (inicia após migrations) ── */
 const { startTrialJob } = require('./services/trialJob');
-startTrialJob();
+migrateTrialCols()
+  .catch(err => console.warn('Migrate trial cols:', err.message))
+  .finally(() => startTrialJob());
 const PORT = process.env.PORT || 3000;
 
 // ── Segurança ──────────────────────────────────
