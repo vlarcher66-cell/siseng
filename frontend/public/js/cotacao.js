@@ -261,8 +261,7 @@ function openModalNova(id = null) {
     opt.textContent = o.nome;
     selObra.appendChild(opt);
   });
-  document.getElementById('fEtapa').innerHTML = '<option value="">— Selecione uma obra primeiro —</option>';
-  document.getElementById('fEtapa').disabled = true;
+  carregarEtapas();
 
   if (id) {
     const c = cotacoes.find(x => x.id === id);
@@ -290,20 +289,31 @@ function closeModalNova(e) {
 }
 
 async function carregarEtapas(etapaIdSelecionada = null) {
-  const obraId  = document.getElementById('fObra').value;
   const selEtapa = document.getElementById('fEtapa');
-  selEtapa.innerHTML = '<option value="">— Sem etapa vinculada —</option>';
-  selEtapa.disabled = !obraId;
-  if (!obraId) return;
+  selEtapa.innerHTML = '<option value="">— Sem modelo vinculado —</option>';
+  selEtapa.disabled = false;
   try {
-    const res = await fetch(`${API_BASE}/obras/etapas?obra_id=${obraId}`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+    const res = await fetch(`${API_BASE}/modelos-etapa`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
     if (res.ok) {
-      const etapas = await res.json();
-      etapas.forEach(e => {
-        const opt = document.createElement('option');
-        opt.value = e.id;
-        opt.textContent = e.nome;
-        selEtapa.appendChild(opt);
+      const modelos = await res.json();
+      const ativos = modelos.filter(m => m.ativo);
+      // Agrupa por tipo
+      const grupos = {};
+      ativos.forEach(m => {
+        const g = m.tipo || 'Outros';
+        if (!grupos[g]) grupos[g] = [];
+        grupos[g].push(m);
+      });
+      Object.entries(grupos).forEach(([grupo, items]) => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = grupo;
+        items.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.nome;
+          opt.textContent = m.nome + (m.duracao ? ` (${m.duracao}d)` : '');
+          optgroup.appendChild(opt);
+        });
+        selEtapa.appendChild(optgroup);
       });
       if (etapaIdSelecionada) selEtapa.value = etapaIdSelecionada;
     }
