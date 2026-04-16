@@ -37,7 +37,7 @@ async function api(method, path, body) {
     }
   };
   if (body !== undefined) opts.body = JSON.stringify(body);
-  const res = await fetch(`/api/compras${path}`, opts);
+  const res = await fetch(`${API_BASE}/compras${path}`, opts);
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) {
     localStorage.removeItem('sis_token');

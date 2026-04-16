@@ -11,7 +11,7 @@ function getToken() {
 async function api(method, path, body) {
   const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` } };
   if (body !== undefined) opts.body = JSON.stringify(body);
-  const res  = await fetch(`/api/compras${path}`, opts);
+  const res  = await fetch(`${API_BASE}/compras${path}`, opts);
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) { localStorage.removeItem('sis_token'); window.location.href = '../index.html'; throw new Error('Não autorizado'); }
   if (!res.ok) throw new Error(data.message || `Erro ${res.status}`);

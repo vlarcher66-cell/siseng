@@ -118,7 +118,7 @@ function getObras() {
 async function getEtapasByObra(obraId) {
   const token = localStorage.getItem('sis_token') || sessionStorage.getItem('sis_token') || '';
   try {
-    const res = await fetch(`/api/obras/etapas?obra_id=${obraId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const res = await fetch(`${API_BASE}/obras/etapas?obra_id=${obraId}`, { headers: { 'Authorization': `Bearer ${token}` } });
     if (res.ok) return await res.json();
   } catch(_) {}
   return [];
