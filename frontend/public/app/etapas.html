@@ -316,12 +316,12 @@
         <div class="form-section-title"><i class="fas fa-info-circle"></i> Identificação</div>
         <div class="form-row-2">
           <div class="form-group">
-            <label>Tipo de Etapa *</label>
+            <label>Modelo de Etapa *</label>
             <div class="input-with-btn">
-              <select id="etapaTipo">
-                <option value="">Selecione...</option>
+              <select id="etapaTipo" onchange="onModeloChange(this)">
+                <option value="">Selecione o modelo...</option>
               </select>
-              <button type="button" class="btn-add-inline" onclick="openPopupTipos()" title="Gerenciar tipos de etapa">
+              <button type="button" class="btn-add-inline" onclick="window.open('modelos-etapa.html','_blank')" title="Gerenciar modelos de etapa">
                 <i class="fas fa-list-alt"></i>
               </button>
             </div>

@@ -183,7 +183,7 @@ async function loadObrasApi() {
   }
 }
 
-/* ── Tipos de etapa — carrega modelos do banco ───────────── */
+/* ── Carrega modelos do banco ────────────────────────────── */
 async function loadTipos() {
   try {
     const res = await fetch(`${API_BASE}/modelos-etapa`, {
@@ -191,14 +191,36 @@ async function loadTipos() {
     });
     if (res.ok) {
       const data = await res.json();
-      // Usa modelos ativos do banco; fallback para lista padrão se vazio
-      const ativos = data.filter(m => m.ativo);
-      tiposEtapa = ativos.length > 0
-        ? ativos.map(m => ({ nome: m.nome, tipo: m.tipo, icone: 'fa-layer-group', cor: '#2563eb' }))
-        : JSON.parse(JSON.stringify(TIPOS_DEFAULT));
+      modelosEtapa = data.filter(m => m.ativo);
+      tiposEtapa = modelosEtapa.map(m => ({ nome: m.nome, tipo: m.tipo, descricao: m.descricao, duracao: m.duracao }));
     }
   } catch (_) {
-    tiposEtapa = JSON.parse(JSON.stringify(TIPOS_DEFAULT));
+    modelosEtapa = [];
+    tiposEtapa = [];
+  }
+}
+
+/* ── Ao selecionar modelo — preenche campos automaticamente ── */
+function onModeloChange(sel) {
+  const modeloNome = sel.value;
+  const modelo = modelosEtapa.find(m => m.nome === modeloNome);
+  if (!modelo) return;
+
+  // Preenche descrição se estiver vazia
+  const descEl = document.getElementById('etapaDescricao');
+  if (descEl && !descEl.value.trim() && modelo.descricao) {
+    descEl.value = modelo.descricao;
+  }
+
+  // Preenche data prevista com base na duração estimada
+  if (modelo.duracao) {
+    const inicioEl = document.getElementById('etapaInicio');
+    const prazoEl  = document.getElementById('etapaPrazo');
+    if (inicioEl && prazoEl && !prazoEl.value) {
+      const base = inicioEl.value ? new Date(inicioEl.value) : new Date();
+      base.setDate(base.getDate() + modelo.duracao);
+      prazoEl.value = base.toISOString().split('T')[0];
+    }
   }
 }
 
@@ -505,14 +527,27 @@ function populateSelects() {
     if (saved) selObra.value = saved;
   }
 
-  // Tipos select no modal
+  // Modelos select no modal — agrupado por tipo
   const selTipo = document.getElementById('etapaTipo');
   const savedT = selTipo?.value;
   if (selTipo) {
-    selTipo.innerHTML = '<option value="">Selecione...</option>' +
-      tiposEtapa.map(t =>
-        `<option value="${t.nome}" data-icone="${t.icone}" data-cor="${t.cor}">${t.nome}</option>`
-      ).join('');
+    if (modelosEtapa.length > 0) {
+      const grupos = {};
+      modelosEtapa.forEach(m => {
+        const g = m.tipo || 'Outros';
+        if (!grupos[g]) grupos[g] = [];
+        grupos[g].push(m);
+      });
+      let opts = '<option value="">Selecione o modelo...</option>';
+      Object.entries(grupos).forEach(([grupo, items]) => {
+        opts += `<optgroup label="${grupo}">`;
+        opts += items.map(m => `<option value="${m.nome}" data-descricao="${(m.descricao||'').replace(/"/g,'&quot;')}" data-duracao="${m.duracao||''}">${m.nome}${m.duracao ? ` (${m.duracao}d)` : ''}</option>`).join('');
+        opts += '</optgroup>';
+      });
+      selTipo.innerHTML = opts;
+    } else {
+      selTipo.innerHTML = '<option value="">Nenhum modelo cadastrado</option>';
+    }
     if (savedT) selTipo.value = savedT;
   }
 
@@ -616,8 +651,10 @@ async function saveEtapa() {
   const tipo   = document.getElementById('etapaTipo').value;
   const obraId = document.getElementById('etapaObra').value;
 
-  if (!tipo)   { showToast('Selecione o tipo de etapa.', 'error'); document.getElementById('etapaTipo').focus(); return; }
+  if (!tipo)   { showToast('Selecione o modelo de etapa.', 'error'); document.getElementById('etapaTipo').focus(); return; }
   if (!obraId) { showToast('Selecione a obra vinculada.', 'error'); document.getElementById('etapaObra').focus(); return; }
+
+  const modelo = modelosEtapa.find(m => m.nome === tipo);
 
   const parseCur = id => {
     const v = document.getElementById(id).value.replace(/\./g,'').replace(',','.');
@@ -627,7 +664,7 @@ async function saveEtapa() {
   const payload = {
     obra_id:       Number(obraId),
     nome:          tipo,
-    tipo:          tipo,
+    tipo:          modelo ? modelo.tipo : tipo,
     status:        document.getElementById('etapaStatus').value,
     percentual:    parseInt(document.getElementById('etapaPercentual').value) || 0,
     responsavel:   document.getElementById('etapaResponsavel').value.trim(),
