@@ -17,7 +17,7 @@ async function api(method, path, body) {
     },
   };
   if (body !== undefined) opts.body = JSON.stringify(body);
-  const res  = await fetch(`/api/compras${path}`, opts);
+  const res  = await fetch(`${API_BASE}/compras${path}`, opts);
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) {
     localStorage.removeItem('sis_token');
@@ -296,7 +296,7 @@ async function carregarEtapas(etapaIdSelecionada = null) {
   selEtapa.disabled = !obraId;
   if (!obraId) return;
   try {
-    const res = await fetch(`/api/obras/etapas?obra_id=${obraId}`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+    const res = await fetch(`${API_BASE}/obras/etapas?obra_id=${obraId}`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
     if (res.ok) {
       const etapas = await res.json();
       etapas.forEach(e => {
