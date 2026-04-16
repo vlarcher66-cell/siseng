@@ -7,7 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "db:migrate": "node src/config/migrate.js",
-    "db:seed": "node src/config/seed.js"
+    "db:seed": "node src/config/seed.js",
+    "db:seed:materiais": "node src/config/seed_plano_materiais.js"
   },
   "engines": {
     "node": ">=18.0.0"

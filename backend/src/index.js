@@ -35,8 +35,82 @@ async function runMigrations() {
   await addColumnIfMissing('etapas',   'custo_real',       'DECIMAL(15,2) DEFAULT 0');
   await addColumnIfMissing('empresas', 'aviso_3d_enviado', 'DATETIME NULL');
   await addColumnIfMissing('empresas', 'aviso_0d_enviado', 'DATETIME NULL');
+
+  // ── Tabelas do módulo Compras ───────────────────
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS grupos_item (
+      id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      empresa_id  INT UNSIGNED NOT NULL,
+      descricao   VARCHAR(100) NOT NULL,
+      status      ENUM('ativo','inativo') DEFAULT 'ativo',
+      criado_em   DATETIME DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_empresa (empresa_id),
+      FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS subgrupos_item (
+      id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      empresa_id  INT UNSIGNED NOT NULL,
+      id_grupo    INT UNSIGNED NOT NULL,
+      descricao   VARCHAR(100) NOT NULL,
+      status      ENUM('ativo','inativo') DEFAULT 'ativo',
+      criado_em   DATETIME DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_empresa (empresa_id),
+      INDEX idx_grupo   (id_grupo),
+      FOREIGN KEY (empresa_id) REFERENCES empresas(id)   ON DELETE CASCADE,
+      FOREIGN KEY (id_grupo)   REFERENCES grupos_item(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  // ── Seed: plano de materiais (apenas se vazio) ──
+  const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM grupos_item');
+  if (total === 0) {
+    await seedPlanoMateriais();
+  }
+
   console.log('✅ Migrations concluídas');
 }
+
+const PLANO_MATERIAIS = [
+  { grupo: 'Estrutura',                      subgrupos: ['Cimento', 'Areia e Brita', 'Aço e Ferragem', 'Madeira para Forma', 'Blocos e Tijolos', 'Concreto Usinado'] },
+  { grupo: 'Alvenaria e Revestimento',       subgrupos: ['Argamassa e Rejunte', 'Cerâmica e Porcelanato', 'Gesso e Drywall', 'Pintura (tinta, massa, fundo)', 'Pastilha e Pedras Naturais'] },
+  { grupo: 'Cobertura e Impermeabilização',  subgrupos: ['Telhas', 'Estrutura Metálica / Madeiramento', 'Impermeabilizantes', 'Calhas e Rufos'] },
+  { grupo: 'Instalações Hidráulicas',        subgrupos: ['Tubos e Conexões (água fria)', 'Tubos e Conexões (esgoto)', 'Caixas d\'água e Reservatórios', 'Registros e Válvulas'] },
+  { grupo: 'Instalações Elétricas',          subgrupos: ['Fios e Cabos', 'Eletrodutos e Perfilados', 'Quadros e Disjuntores', 'Tomadas, Interruptores e Espelhos'] },
+  { grupo: 'Esquadrias',                     subgrupos: ['Portas de Madeira', 'Portas de Alumínio / Ferro', 'Janelas de Alumínio / Ferro', 'Vidros e Espelhos', 'Portões'] },
+  { grupo: 'Louças e Metais',                subgrupos: ['Bacias e Caixas Acopladas', 'Pias e Cubas', 'Torneiras e Misturadores', 'Chuveiros e Duchas', 'Acessórios de Banheiro'] },
+  { grupo: 'Acabamentos Gerais',             subgrupos: ['Rodapé e Soleira', 'Forro (PVC, gesso, madeira)', 'Escadas e Corrimão', 'Divisórias'] },
+  { grupo: 'Materiais Diversos',             subgrupos: ['Parafusos, Buchas e Fixadores', 'Selantes e Adesivos', 'Telas e Telas Metálicas', 'Materiais de Limpeza da Obra'] },
+];
+
+async function seedPlanoMateriais() {
+  const conn = await pool.getConnection();
+  try {
+    const [[empresa]] = await conn.query('SELECT id FROM empresas LIMIT 1');
+    if (!empresa) return;
+    const eid = empresa.id;
+    console.log('🌱 Inserindo plano de materiais...');
+    for (const g of PLANO_MATERIAIS) {
+      const [r] = await conn.query(
+        'INSERT IGNORE INTO grupos_item (empresa_id, descricao) VALUES (?, ?)', [eid, g.grupo]
+      );
+      const grupoId = r.insertId || (await conn.query(
+        'SELECT id FROM grupos_item WHERE empresa_id=? AND descricao=?', [eid, g.grupo]
+      ))[0][0].id;
+      for (const sub of g.subgrupos) {
+        await conn.query(
+          'INSERT IGNORE INTO subgrupos_item (empresa_id, id_grupo, descricao) VALUES (?, ?, ?)',
+          [eid, grupoId, sub]
+        );
+      }
+    }
+    console.log('✅ Plano de materiais inserido');
+  } finally {
+    conn.release();
+  }
+}
+
 runMigrations()
   .catch(err => console.warn('Migrate:', err.message))
   .finally(() => startTrialJob());
