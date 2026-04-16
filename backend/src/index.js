@@ -63,11 +63,8 @@ async function runMigrations() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
-  // ── Seed: plano de materiais (apenas se vazio) ──
-  const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM grupos_item');
-  if (total === 0) {
-    await seedPlanoMateriais();
-  }
+  // ── Seed: plano de materiais para todas as empresas sem grupos ──
+  await seedPlanoMateriais();
 
   console.log('✅ Migrations concluídas');
 }
@@ -87,25 +84,31 @@ const PLANO_MATERIAIS = [
 async function seedPlanoMateriais() {
   const conn = await pool.getConnection();
   try {
-    const [[empresa]] = await conn.query('SELECT id FROM empresas LIMIT 1');
-    if (!empresa) return;
-    const eid = empresa.id;
-    console.log('🌱 Inserindo plano de materiais...');
-    for (const g of PLANO_MATERIAIS) {
-      const [r] = await conn.query(
-        'INSERT IGNORE INTO grupos_item (empresa_id, descricao) VALUES (?, ?)', [eid, g.grupo]
+    const [empresas] = await conn.query('SELECT id FROM empresas');
+    if (!empresas.length) return;
+    for (const empresa of empresas) {
+      const eid = empresa.id;
+      const [[{ total }]] = await conn.query(
+        'SELECT COUNT(*) as total FROM grupos_item WHERE empresa_id=?', [eid]
       );
-      const grupoId = r.insertId || (await conn.query(
-        'SELECT id FROM grupos_item WHERE empresa_id=? AND descricao=?', [eid, g.grupo]
-      ))[0][0].id;
-      for (const sub of g.subgrupos) {
-        await conn.query(
-          'INSERT IGNORE INTO subgrupos_item (empresa_id, id_grupo, descricao) VALUES (?, ?, ?)',
-          [eid, grupoId, sub]
+      if (total > 0) continue;
+      console.log(`🌱 Inserindo plano de materiais para empresa_id=${eid}...`);
+      for (const g of PLANO_MATERIAIS) {
+        const [r] = await conn.query(
+          'INSERT IGNORE INTO grupos_item (empresa_id, descricao) VALUES (?, ?)', [eid, g.grupo]
         );
+        const grupoId = r.insertId || (await conn.query(
+          'SELECT id FROM grupos_item WHERE empresa_id=? AND descricao=?', [eid, g.grupo]
+        ))[0][0].id;
+        for (const sub of g.subgrupos) {
+          await conn.query(
+            'INSERT IGNORE INTO subgrupos_item (empresa_id, id_grupo, descricao) VALUES (?, ?, ?)',
+            [eid, grupoId, sub]
+          );
+        }
       }
+      console.log(`✅ Plano inserido para empresa_id=${eid}`);
     }
-    console.log('✅ Plano de materiais inserido');
   } finally {
     conn.release();
   }
