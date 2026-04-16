@@ -26,13 +26,7 @@ router.get('/', async (req, res) => {
               e.data_inicio, e.data_fim, e.responsavel,
               e.tipo, e.custo_previsto, e.custo_real, e.criado_em,
               o.nome AS obra_nome,
-              COALESCE(
-                (SELECT SUM(mi.perc_executado)
-                 FROM medicao_itens mi
-                 JOIN medicoes m ON m.id = mi.medicao_id
-                 WHERE mi.etapa_id = e.id AND m.empresa_id = e.empresa_id),
-                e.percentual, 0
-              ) AS percentual
+              COALESCE(e.percentual, 0) AS percentual
        FROM etapas e
        JOIN obras o ON o.id = e.obra_id
        ${where}
@@ -41,7 +35,8 @@ router.get('/', async (req, res) => {
     );
     res.json(rows);
   } catch (err) {
-    res.status(500).json({ message: 'Erro ao listar etapas.', error: err.message });
+    console.error('Erro ao listar etapas:', err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
