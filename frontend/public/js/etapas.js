@@ -183,12 +183,24 @@ async function loadObrasApi() {
   }
 }
 
-/* ── Tipos de etapa ──────────────────────────────────────── */
-function loadTipos() {
-  const rawTipos = localStorage.getItem('sis_tipos_etapa');
-  tiposEtapa = rawTipos ? JSON.parse(rawTipos) : JSON.parse(JSON.stringify(TIPOS_DEFAULT));
+/* ── Tipos de etapa — carrega modelos do banco ───────────── */
+async function loadTipos() {
+  try {
+    const res = await fetch(`${API_BASE}/modelos-etapa`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // Usa modelos ativos do banco; fallback para lista padrão se vazio
+      const ativos = data.filter(m => m.ativo);
+      tiposEtapa = ativos.length > 0
+        ? ativos.map(m => ({ nome: m.nome, tipo: m.tipo, icone: 'fa-layer-group', cor: '#2563eb' }))
+        : JSON.parse(JSON.stringify(TIPOS_DEFAULT));
+    }
+  } catch (_) {
+    tiposEtapa = JSON.parse(JSON.stringify(TIPOS_DEFAULT));
+  }
 }
-function saveTiposStorage() { localStorage.setItem('sis_tipos_etapa', JSON.stringify(tiposEtapa)); }
 
 async function loadObrasCount() {
   const token = getToken();
@@ -526,9 +538,6 @@ function populateSelects() {
 /* ── Modal Etapa ─────────────────────────────────────────── */
 function openModalEtapa(id = null) {
   editingId = id;
-  // Recarrega modelos (pode ter sido atualizado em outra aba)
-  const rawModelos = localStorage.getItem('modelos_etapa');
-  modelosEtapa = rawModelos ? JSON.parse(rawModelos).filter(m => m.ativo) : [];
   populateSelects();
   const title = document.getElementById('modalEtapaTitle');
 
@@ -967,13 +976,11 @@ document.head.appendChild(toastStyles);
    INICIALIZAÇÃO
 ══════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
-  loadTipos();
   loadUserInfo();
   initSidebar();
-
   renderSidebar('etapas');
   maskCurrency(document.getElementById('etapaCustoPrevisto'));
-  await Promise.all([loadEtapas(), loadObrasApi(), loadObrasCount()]);
+  await Promise.all([loadTipos(), loadEtapas(), loadObrasApi(), loadObrasCount()]);
   populateSelects();
   updateTabCounts();
   renderEtapas();

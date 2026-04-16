@@ -112,7 +112,8 @@ app.use('/api/usuarios',    require('./routes/usuarios'));
 // app.use('/api/dashboard',   require('./routes/dashboard'));
 
 // ── Módulo Compras/Cotação ──────────────────────────────
-app.use('/api/compras',      require('./routes/compras'));
+app.use('/api/compras',        require('./routes/compras'));
+app.use('/api/modelos-etapa',  require('./routes/modelos_etapa'));
 app.use('/api/medicoes',     require('./routes/medicoes'));
 app.use('/api/rdo',          require('./routes/rdo'));
 app.use('/api/admin',        require('./routes/admin'));
