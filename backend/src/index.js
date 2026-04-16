@@ -11,34 +11,27 @@ const pool         = require('./config/database');
 
 const app  = express();
 
-/* ── Migração automática de colunas extras na tabela etapas ── */
-async function migrateEtapasColumns() {
+// ── Trust proxy (Railway fica atrás de proxy) ──
+app.set('trust proxy', 1);
+
+/* ── Migrations + inicialização ── */
+const { startTrialJob } = require('./services/trialJob');
+async function runMigrations() {
   const alters = [
     "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS responsavel VARCHAR(150) NULL",
     "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS tipo VARCHAR(100) NULL",
     "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_previsto DECIMAL(15,2) DEFAULT 0",
     "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_real DECIMAL(15,2) DEFAULT 0",
-  ];
-  for (const sql of alters) {
-    try { await pool.query(sql); } catch (_) { /* coluna já existe */ }
-  }
-}
-migrateEtapasColumns().catch(err => console.warn('Migrate etapas:', err.message));
-
-/* ── Migração: colunas de controle do trial job ── */
-async function migrateTrialCols() {
-  const alters = [
     "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_3d_enviado DATETIME NULL",
     "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_0d_enviado DATETIME NULL",
   ];
   for (const sql of alters) {
     try { await pool.query(sql); } catch (_) {}
   }
+  console.log('✅ Migrations concluídas');
 }
-/* ── Job automático de trial (inicia após migrations) ── */
-const { startTrialJob } = require('./services/trialJob');
-migrateTrialCols()
-  .catch(err => console.warn('Migrate trial cols:', err.message))
+runMigrations()
+  .catch(err => console.warn('Migrate:', err.message))
   .finally(() => startTrialJob());
 const PORT = process.env.PORT || 3000;
 
