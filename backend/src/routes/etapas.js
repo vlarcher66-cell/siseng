@@ -86,7 +86,8 @@ router.post('/', async (req, res) => {
     );
     res.status(201).json(etapa);
   } catch (err) {
-    res.status(500).json({ message: 'Erro ao criar etapa.', error: err.message });
+    console.error('Erro ao criar etapa:', err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
