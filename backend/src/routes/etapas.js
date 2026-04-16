@@ -8,9 +8,19 @@ const pool = require('../config/database');
 
 router.use(authMiddleware);
 
-/* Migração: garante que 'bloqueada' existe no ENUM status */
-pool.query(`ALTER TABLE etapas MODIFY COLUMN status ENUM('pendente','em_andamento','concluida','atrasada','bloqueada') DEFAULT 'pendente'`)
-  .catch(() => {});
+/* Migração automática de colunas extras */
+(async () => {
+  const alters = [
+    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS responsavel VARCHAR(150) NULL",
+    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS tipo VARCHAR(100) NULL",
+    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_previsto DECIMAL(15,2) DEFAULT 0",
+    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_real DECIMAL(15,2) DEFAULT 0",
+    "ALTER TABLE etapas MODIFY COLUMN status ENUM('pendente','em_andamento','concluida','atrasada','bloqueada') DEFAULT 'pendente'",
+  ];
+  for (const sql of alters) {
+    try { await pool.query(sql); } catch (_) {}
+  }
+})();
 
 /* GET /api/etapas — lista etapas da empresa (filtros: obra_id, status) */
 router.get('/', async (req, res) => {
