@@ -16,18 +16,25 @@ app.set('trust proxy', 1);
 
 /* ── Migrations + inicialização ── */
 const { startTrialJob } = require('./services/trialJob');
-async function runMigrations() {
-  const alters = [
-    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS responsavel VARCHAR(150) NULL",
-    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS tipo VARCHAR(100) NULL",
-    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_previsto DECIMAL(15,2) DEFAULT 0",
-    "ALTER TABLE etapas ADD COLUMN IF NOT EXISTS custo_real DECIMAL(15,2) DEFAULT 0",
-    "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_3d_enviado DATETIME NULL",
-    "ALTER TABLE empresas ADD COLUMN IF NOT EXISTS aviso_0d_enviado DATETIME NULL",
-  ];
-  for (const sql of alters) {
-    try { await pool.query(sql); } catch (_) {}
+async function addColumnIfMissing(table, column, definition) {
+  const [cols] = await pool.query(
+    `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?`,
+    [table, column]
+  );
+  if (cols.length === 0) {
+    await pool.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    console.log(`  + ${table}.${column}`);
   }
+}
+
+async function runMigrations() {
+  await addColumnIfMissing('etapas',   'responsavel',      'VARCHAR(150) NULL');
+  await addColumnIfMissing('etapas',   'tipo',             'VARCHAR(100) NULL');
+  await addColumnIfMissing('etapas',   'custo_previsto',   'DECIMAL(15,2) DEFAULT 0');
+  await addColumnIfMissing('etapas',   'custo_real',       'DECIMAL(15,2) DEFAULT 0');
+  await addColumnIfMissing('empresas', 'aviso_3d_enviado', 'DATETIME NULL');
+  await addColumnIfMissing('empresas', 'aviso_0d_enviado', 'DATETIME NULL');
   console.log('✅ Migrations concluídas');
 }
 runMigrations()
